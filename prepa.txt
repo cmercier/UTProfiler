@@ -1,0 +1,10 @@
+catalogue uvs - visualisation de l'ensemble des uvs et modif, ajout, suppr
+cursus intégré dans le catalogue uvs
+
+
+espace perso - login
+	rentrer le parcours
+	page perso (son parcours, ses prévisions (possibilité d'en créer), ses infos)
+	prévisions
+		rentrer des contraintes (utc ou étranger?) , uv à faire ou pas
+		enregistrer
