@@ -1,8 +1,13 @@
 QT += widgets
+QT += xml
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    uvmanager.h \
+    utprofilerexception.h
 
 SOURCES += \
     mainwindow.cpp \
-    main.cpp
+    main.cpp \
+    uvmanager.cpp \
+    utprofilerexception.cpp

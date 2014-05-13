@@ -7,11 +7,9 @@ MainWindow::MainWindow()
 
 void MainWindow::createStackedWidget()
 {
-    QWidget *catalog = new QWidget;
-    QWidget *user = new QWidget;
-
+    // List of all items in the left navigation bar
     QListWidget *lw = new QListWidget(this);
-    lw->setFixedSize(100,400);
+    lw->setFixedWidth(100);
     lw->setSelectionMode(QAbstractItemView::SingleSelection);
     QListWidgetItem *catalogItem = new QListWidgetItem;
     catalogItem->setText("Catalogue Uvs");
@@ -20,12 +18,24 @@ void MainWindow::createStackedWidget()
     userItem->setText("Espace perso");
     lw->insertItem(1,userItem);
 
+    // Corresponding pages
+    QWidget *catalog = new QWidget;
+    catalog->setStyleSheet("background-color:black;");
+    QWidget *user = new QWidget;
+    user->setStyleSheet("background-color:green;");
+
     QStackedWidget *sw = new QStackedWidget;
     sw->addWidget(catalog);
     sw->addWidget(user);
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(sw);
-    setLayout(layout);
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->addWidget(lw);
+    mainLayout->addWidget(sw);
+
+    QWidget* cw = new QWidget;
+    cw->setLayout(mainLayout);
+    setCentralWidget(cw);
+
+    QObject::connect(lw,SIGNAL(currentRowChanged(int)),sw,SLOT(setCurrentIndex(int)));
 }
 
