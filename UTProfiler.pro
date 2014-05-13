@@ -1,3 +1,5 @@
+QT += widgets
+
 HEADERS += \
     mainwindow.h
 
