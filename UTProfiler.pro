@@ -4,10 +4,12 @@ QT += xml
 HEADERS += \
     mainwindow.h \
     uvmanager.h \
-    utprofilerexception.h
+    utprofilerexception.h \
+    uv.h
 
 SOURCES += \
     mainwindow.cpp \
     main.cpp \
     uvmanager.cpp \
-    utprofilerexception.cpp
+    utprofilerexception.cpp \
+    uv.cpp

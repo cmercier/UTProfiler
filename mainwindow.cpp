@@ -3,6 +3,9 @@
 MainWindow::MainWindow()
 {
     createStackedWidget();
+
+    UVManager::instance().loadFromFile("UV_UTC.xml");
+    UVManager::instance().save("UV_UTC.xml");
 }
 
 void MainWindow::createStackedWidget()
