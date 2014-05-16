@@ -6,12 +6,60 @@ UVManager::UVManager()
 {
 }
 
+void UVManager::addDegree(QDomElement &element, Degree *parent)
+{
+    Degree *degree = new Degree;
+    degree->setTitle(element.firstChildElement("titre").text());
+    degree->setType(element.attribute("type","formation"));
+    addUvs(degree,element);
+
+    for(QDomElement childElement = element.firstChildElement("item"); !childElement.isNull(); childElement = childElement.nextSiblingElement("item"))
+    {
+        addDegree(childElement,degree);
+    }
+
+    degree->setParent(parent);
+    degrees_.push_back(degree);
+}
+
 void UVManager::addUv(Uv *uv)
 {
     if(!uv)
         return;
 
     uvs_.push_back(uv);
+}
+
+void UVManager::addUvs(Degree *degree, QDomElement &element)
+{
+    for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
+    {
+        const Uv *uv = uvFromCode(uvElement.text());
+        if(uv)
+            degree->addUv(uv);
+    }
+}
+
+QList<const Degree*> UVManager::degreesWithParent(const QString &parentTitle)
+{
+    QList<const Degree*> result;
+    for(int i = 0; i < degrees_.size(); i++)
+    {
+        if(degrees_.at(i)->parent() && degrees_.at(i)->parent()->title() == parentTitle)
+            result.push_back(degrees_.at(i));
+    }
+    return result;
+}
+
+const Degree* UVManager::degreeWithTitle(const QString &title)
+{
+    for(int i = 0; i < degrees_.size(); i++)
+    {
+        if(degrees_.at(i)->title() == title)
+            return degrees_.at(i);
+    }
+
+    return 0;
 }
 
 UVManager& UVManager::instance()
@@ -22,17 +70,35 @@ UVManager& UVManager::instance()
     return *instance_;
 }
 
-void UVManager::loadFromFile(const QString &filePath)
+void UVManager::loadDegrees(const QString &fileName)
 {
-    QFile file(filePath);
+    QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
-        throw UTProfilerException("Failed to open " + filePath + " in UVManager::loadFromFile.");
+        throw UTProfilerException("Failed to open " + fileName + " in UVManager::loadDegrees.");
 
-    QDomDocument domDocument;
+    QDomDocument dom;
+    dom.setContent(&file);
 
-    domDocument.setContent(&file);
+    QDomElement degrees = dom.documentElement();
 
-    QDomElement uvs = domDocument.documentElement();
+    for(QDomElement degreeElement = degrees.firstChildElement("item"); !degreeElement.isNull(); degreeElement = degreeElement.nextSiblingElement("item"))
+    {
+        addDegree(degreeElement);
+    }
+
+    file.close();
+}
+
+void UVManager::loadUvs(const QString &fileName)
+{
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly))
+        throw UTProfilerException("Failed to open " + fileName + " in UVManager::loadUvs.");
+
+    QDomDocument dom;
+    dom.setContent(&file);
+
+    QDomElement uvs = dom.documentElement();
 
     for(QDomElement uvElement = uvs.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
@@ -49,13 +115,13 @@ void UVManager::loadFromFile(const QString &filePath)
     file.close();
 }
 
-void UVManager::save(const QString &filePath)
+void UVManager::save(const QString &fileName)
 {
-    QFile file(filePath);
+    QFile file(fileName);
     if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
     {
-        //throw UTProfilerException("Failed to open " + filePath + " in UVManager::save.");
-        qDebug() << "Failed to open " << filePath << " in save";
+        //throw UTProfilerException("Failed to open " + fileName + " in UVManager::save.");
+        qDebug() << "Failed to open " << fileName << " in save";
         return;
     }
 
@@ -102,3 +168,34 @@ void UVManager::save(const QString &filePath)
     file.close();
 }
 
+const Uv* UVManager::uvFromCode(const QString &code) const
+{
+    for(int i = 0; i < uvs_.size(); i++)
+    {
+        if(uvs_.at(i)->code() == code)
+            return uvs_.at(i);
+    }
+
+    return 0;
+}
+
+QList<const Uv*> UVManager::uvs() const
+{
+    QList<const Uv*> result;
+    for(int i = 0; i < uvs_.size(); i++)
+    {
+        result.push_back(uvs_.at(i));
+    }
+    return result;
+}
+
+QList<const Uv*> UVManager::uvsFromCode(const QStringList &codes) const
+{
+    QList<const Uv*> result;
+    for(int i = 0; i < uvs_.size(); i++)
+    {
+        if(codes.contains(uvs_.at(i)->title()))
+            result.push_back(uvs_.at(i));
+    }
+    return result;
+}

@@ -19,8 +19,8 @@ class Uv
 public:
     Category category() const {return category_;}
     static QString categoryToString(Category category);
-    unsigned int credits() const {return credits_;}
     const QString & code() const {return code_;}
+    unsigned int credits() const {return credits_;}
     bool fall() const {return fall_;}
     bool spring() const {return spring_;}
     void setCategory(Category category) {category_ = category;}
