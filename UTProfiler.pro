@@ -6,7 +6,8 @@ HEADERS += \
     uvmanager.h \
     utprofilerexception.h \
     uv.h \
-    degree.h
+    degree.h \
+    student.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -14,4 +15,5 @@ SOURCES += \
     uvmanager.cpp \
     utprofilerexception.cpp \
     uv.cpp \
-    degree.cpp
+    degree.cpp \
+    student.cpp

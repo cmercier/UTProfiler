@@ -1,0 +1,15 @@
+<etudiants>
+    <etudiant>
+        <nom>Mercier</nom>
+        <prenom>Clement</prenom>
+        <cursus>GI</cursus>
+        <uv>LO21</uv>
+        <uv>NF17</uv>
+        <equivalence>
+            <cs>6</cs>
+            <tm>12</tm>
+            <tsh>4</tsh>
+            <sp>6</sp>
+        </equivalence>
+    </etudiant>
+</etudiants>

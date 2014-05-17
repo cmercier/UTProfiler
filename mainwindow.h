@@ -25,10 +25,18 @@ private:
     QCheckBox* cs_;
     QComboBox* degree_;
     QHBoxLayout* degreeLayout_;
+    QHBoxLayout* equivalance_;
+    QLineEdit* equivalenceCs_;
+    QLineEdit* equivalenceTm_;
+    QLineEdit* equivalenceTsh_;
+    QLineEdit* equivalenceSp_;
     QCheckBox* fall_;
+    QLineEdit* firstName_;
+    QLineEdit* lastName_;
     const Degree* selectedDegree_;
     QCheckBox* sp_;
     QCheckBox* spring_;
+    QComboBox* student_;
     QCheckBox* tm_;
     QCheckBox* tsh_;
     QWidget* user_;
