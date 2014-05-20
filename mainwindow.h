@@ -21,12 +21,17 @@ private:
     void clearLayout(QLayout* layout);
     void createCatalog();
     void createStackedWidget();
-    void createUser(); // pour toi clément
+    void createUser();
 
     QWidget* catalog_;
     QCheckBox* cs_;
     QComboBox* degree_;
     QHBoxLayout* degreeLayout_;
+    QHBoxLayout* equivalance_;
+    QLineEdit* equivalenceCs_;
+    QLineEdit* equivalenceTm_;
+    QLineEdit* equivalenceTsh_;
+    QLineEdit* equivalenceSp_;
     QCheckBox* fall_;
     bool isCriteriaChange_;
     bool editCatalog_;
@@ -34,6 +39,9 @@ private:
     QCheckBox* sp_;
     QCheckBox* spring_;
     QPushButton* submit_;
+    QLineEdit* firstName_;
+    QLineEdit* lastName_;
+    QComboBox* student_;
     QCheckBox* tm_;
     QCheckBox* tsh_;
     QWidget* user_;

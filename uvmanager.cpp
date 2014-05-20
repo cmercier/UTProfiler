@@ -30,6 +30,16 @@ void UVManager::addUv(Uv *uv)
     uvs_.push_back(uv);
 }
 
+void UVManager::addDegrees(Student *student, QDomElement &element)
+{
+    for(QDomElement degreeElement = element.firstChildElement("cursus"); !degreeElement.isNull(); degreeElement = degreeElement.nextSiblingElement("cursus"))
+    {
+        const Degree *degree = degreeWithTitle(degreeElement.text());
+        if(degree)
+            student->addDegree(degree);
+    }
+}
+
 void UVManager::addUvs(Degree *degree, QDomElement &element)
 {
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
@@ -38,6 +48,24 @@ void UVManager::addUvs(Degree *degree, QDomElement &element)
         if(uv)
             degree->addUv(uv);
     }
+}
+
+void UVManager::addUvs(Student *student, QDomElement &element)
+{
+    for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
+    {
+        const Uv *uv = uvFromCode(uvElement.text());
+        if(uv)
+            student->addUv(uv);
+    }
+}
+
+void UVManager::addStudent(Student *student)
+{
+    if(!student)
+        return;
+
+    students_.push_back(student);
 }
 
 QList<const Degree*> UVManager::degreesWithParent(const QString &parentTitle)
@@ -84,6 +112,35 @@ void UVManager::loadDegrees(const QString &fileName)
     for(QDomElement degreeElement = degrees.firstChildElement("item"); !degreeElement.isNull(); degreeElement = degreeElement.nextSiblingElement("item"))
     {
         addDegree(degreeElement);
+    }
+
+    file.close();
+}
+
+void UVManager::loadStudents(const QString &fileName)
+{
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly))
+        throw UTProfilerException("Failed to open " + fileName + " in UVManager::loadStudents.");
+
+    QDomDocument dom;
+    dom.setContent(&file);
+
+    QDomElement students = dom.documentElement();
+
+    for(QDomElement studentElement = students.firstChildElement("etudiant"); !studentElement.isNull(); studentElement = studentElement.nextSiblingElement("etudiant"))
+    {
+        Student* student = new Student;
+        student->setLogin(studentElement.firstChildElement("login").text());
+        student->setFirstName(studentElement.firstChildElement("prenom").text());
+        student->setLastName(studentElement.firstChildElement("nom").text());
+        addDegrees(student, studentElement); // load degrees
+        addUvs(student, studentElement); // load uvs
+        student->setEquivalenceCs(studentElement.firstChildElement("equivalence").firstChildElement("cs").text().toUInt());
+        student->setEquivalenceTm(studentElement.firstChildElement("equivalence").firstChildElement("tm").text().toUInt());
+        student->setEquivalenceTsh(studentElement.firstChildElement("equivalence").firstChildElement("tsh").text().toUInt());
+        student->setEquivalenceSp(studentElement.firstChildElement("equivalence").firstChildElement("sp").text().toUInt());
+        addStudent(student);
     }
 
     file.close();
