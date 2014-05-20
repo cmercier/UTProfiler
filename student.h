@@ -32,6 +32,7 @@ private:
     Student(const Student &student);
     Student& operator=(const Student &student);
     friend class UVManager;
+    friend class SessionManager;
 
     QList<const Degree*> degrees_;
     unsigned int equivalenceCs_;

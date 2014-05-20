@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 #include <QDebug>
 #include "catalog.h"
+#include "curriculum.h"
+#include "sessionmanager.h"
 
 class MainWindow: public QMainWindow
 {
@@ -11,14 +13,14 @@ public:
     MainWindow();
 
 public slots:
+    void setTag(int index);
 
 private:
-    void clearLayout(QLayout* layout);
-    void createCatalog();
     void createStackedWidget();
     void createUser();
 
     Catalog* catalog_;
+    Curriculum* curriculum_;
     QHBoxLayout* equivalance_;
     QLineEdit* equivalenceCs_;
     QLineEdit* equivalenceTm_;
@@ -26,6 +28,7 @@ private:
     QLineEdit* equivalenceSp_;
     QLineEdit* firstName_;
     QLineEdit* lastName_;
+    QStackedWidget* navigationStackedWidget_;
     QComboBox* student_;
     QWidget* user_;
 };

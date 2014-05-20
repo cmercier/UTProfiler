@@ -102,7 +102,7 @@ Catalog::Catalog():
     l4->addWidget(edit);
     mainLayout->addLayout(l4);
 
-    // By default display all uvs
+    // By default show all uvs
     updateCatalog();
 }
 
@@ -200,7 +200,6 @@ void Catalog::updateCatalog()
     QVBoxLayout* titleCol = new QVBoxLayout;
     QVBoxLayout* creditsCol = new QVBoxLayout;
 
-    QLineEdit* test = 0;
     for(int i = 0; i < uvs.size(); i++)
     {
         const Uv* uv = uvs.at(i);
@@ -210,8 +209,6 @@ void Catalog::updateCatalog()
         code->setFixedWidth(50);
         code->setReadOnly(!editCatalog_);
         codeCol->addWidget(code);
-        if(i == 100)
-            test = code;
         QLineEdit* title = new QLineEdit(uv->title());
         title->setReadOnly(!editCatalog_);
         titleCol->addWidget(title);

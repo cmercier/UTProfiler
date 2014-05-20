@@ -9,7 +9,9 @@ HEADERS += \
     degree.h \
     student.h \
     catalog.h \
-    utilities.h
+    utilities.h \
+    sessionmanager.h \
+    curriculum.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -20,4 +22,6 @@ SOURCES += \
     degree.cpp \
     student.cpp \
     catalog.cpp \
-    utilities.cpp
+    utilities.cpp \
+    sessionmanager.cpp \
+    curriculum.cpp
