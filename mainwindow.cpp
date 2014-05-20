@@ -7,6 +7,7 @@ MainWindow::MainWindow():
     {
         UVManager::instance().loadUvs("UV_UTC.xml");
         UVManager::instance().loadDegrees("formations.xml");
+        UVManager::instance().loadStudents("etudiants.xml");
     }
     catch(UTProfilerException e)
     {

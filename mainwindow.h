@@ -19,7 +19,7 @@ private:
     void clearLayout(QLayout* layout);
     void createCatalog();
     void createStackedWidget();
-    void createUser(); // pour toi clément
+    void createUser();
 
     QWidget* catalog_;
     QCheckBox* cs_;

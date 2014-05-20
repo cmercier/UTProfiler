@@ -1,7 +1,9 @@
 <etudiants>
     <etudiant>
-        <nom>Mercier</nom>
+        <login>cmercier</cmercier>
         <prenom>Clement</prenom>
+        <nom>Mercier</nom>
+        <cursus>Ingénieur - Tronc Commun</cursus>
         <cursus>GI</cursus>
         <uv>LO21</uv>
         <uv>NF17</uv>
