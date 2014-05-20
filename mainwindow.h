@@ -12,6 +12,8 @@ public:
     MainWindow();
 
 public slots:
+    void criteriaChanged();
+    void editCatalog(bool edit);
     void selectDegree(const QString &title);
     void updateCatalog();
 
@@ -26,13 +28,17 @@ private:
     QComboBox* degree_;
     QHBoxLayout* degreeLayout_;
     QCheckBox* fall_;
+    bool isCriteriaChange_;
+    bool editCatalog_;
     const Degree* selectedDegree_;
     QCheckBox* sp_;
     QCheckBox* spring_;
+    QPushButton* submit_;
     QCheckBox* tm_;
     QCheckBox* tsh_;
     QWidget* user_;
     QHBoxLayout* uvsLayout_;
+    QScrollArea* uvsScrollArea_;
 };
 
 #endif // MAINWINDOW_H
