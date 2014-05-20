@@ -7,7 +7,9 @@ HEADERS += \
     utprofilerexception.h \
     uv.h \
     degree.h \
-    student.h
+    student.h \
+    catalog.h \
+    utilities.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -16,4 +18,6 @@ SOURCES += \
     utprofilerexception.cpp \
     uv.cpp \
     degree.cpp \
-    student.cpp
+    student.cpp \
+    catalog.cpp \
+    utilities.cpp

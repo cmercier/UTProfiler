@@ -5,7 +5,6 @@
 #include "uv.h"
 #include "degree.h"
 
-
 class Student
 {
 public:
