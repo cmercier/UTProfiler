@@ -17,20 +17,11 @@ public slots:
 
 private:
     void createStackedWidget();
-    void createUser();
 
     Catalog* catalog_;
     Curriculum* curriculum_;
-    QHBoxLayout* equivalance_;
-    QLineEdit* equivalenceCs_;
-    QLineEdit* equivalenceTm_;
-    QLineEdit* equivalenceTsh_;
-    QLineEdit* equivalenceSp_;
-    QLineEdit* firstName_;
-    QLineEdit* lastName_;
     QStackedWidget* navigationStackedWidget_;
-    QComboBox* student_;
-    QWidget* user_;
+
 };
 
 #endif // MAINWINDOW_H

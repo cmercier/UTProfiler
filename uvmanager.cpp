@@ -40,6 +40,17 @@ void UVManager::addDegrees(Student *student, QDomElement &element)
     }
 }
 
+void UVManager::addSemesters(Student *student, QDomElement &element)
+{
+    for(QDomElement semesterElement = element.firstChildElement("semestre"); !semesterElement.isNull(); semesterElement = semesterElement.nextSiblingElement("semestre"))
+    {
+        Semester *semester = new Semester();
+        semester->setTitle(semesterElement.firstChildElement("titre").text());
+        addUvs(semester, semesterElement);
+        student->addSemester(semester);
+    }
+}
+
 void UVManager::addUvs(Degree *degree, QDomElement &element)
 {
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
@@ -50,13 +61,13 @@ void UVManager::addUvs(Degree *degree, QDomElement &element)
     }
 }
 
-void UVManager::addUvs(Student *student, QDomElement &element)
+void UVManager::addUvs(Semester *semester, QDomElement &element)
 {
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
         const Uv *uv = uvFromCode(uvElement.text());
         if(uv)
-            student->addUv(uv);
+            semester->addUv(uv);
     }
 }
 
@@ -135,7 +146,7 @@ void UVManager::loadStudents(const QString &fileName)
         student->setFirstName(studentElement.firstChildElement("prenom").text());
         student->setLastName(studentElement.firstChildElement("nom").text());
         addDegrees(student, studentElement); // load degrees
-        addUvs(student, studentElement); // load uvs
+        addSemesters(student, studentElement); // load semsters and uvs
         student->setEquivalenceCs(studentElement.firstChildElement("equivalence").firstChildElement("cs").text().toUInt());
         student->setEquivalenceTm(studentElement.firstChildElement("equivalence").firstChildElement("tm").text().toUInt());
         student->setEquivalenceTsh(studentElement.firstChildElement("equivalence").firstChildElement("tsh").text().toUInt());

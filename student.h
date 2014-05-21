@@ -5,15 +5,35 @@
 #include "uv.h"
 #include "degree.h"
 
-class Student
+class Semester
 {
 public:
     void addUv(const Uv *uv);
+    const QString & title() const {return title_;}
+    void setTitle(const QString &title) {title_ = title;}
+    const QList<const Uv*>& uvs() const {return uvs_;}
+
+private:
+    Semester();
+    Semester(const Semester &semester);
+    Semester& operator=(const Semester &semester);
+    friend class UVManager;
+    friend class SessionManager;
+
+    QString title_;
+    QList<const Uv*> uvs_;
+};
+
+class Student
+{
+public:
     void addDegree(const Degree *degree);
-    const unsigned int & equivalenceCs() const {return equivalenceCs_;}
-    const unsigned int & equivalenceTm() const {return equivalenceTm_;}
-    const unsigned int & equivalenceTsh() const {return equivalenceTsh_;}
-    const unsigned int & equivalenceSp() const {return equivalenceSp_;}
+    void addSemester(const Semester *semester);
+    const QList<const Degree*>& degrees() const {return degrees_;}
+    unsigned int equivalenceCs() const {return equivalenceCs_;}
+    unsigned int equivalenceTm() const {return equivalenceTm_;}
+    unsigned int equivalenceTsh() const {return equivalenceTsh_;}
+    unsigned int equivalenceSp() const {return equivalenceSp_;}
     const QString & firstName() const {return firstName_;}
     const QString & lastName() const {return lastName_;}
     const QString & login() const {return login_;}
@@ -24,8 +44,7 @@ public:
     void setFirstName(const QString &firstName) {firstName_ = firstName;}
     void setLastName(const QString &lastName) {lastName_ = lastName;}
     void setLogin(const QString &login) {login_ = login;}
-
-    const QList<const Uv*>& uvs() const {return uvs_;}
+    const QList<const Semester*>& semesters() const {return semesters_;}
 
 private:
     Student();
@@ -42,7 +61,8 @@ private:
     QString firstName_;
     QString lastName_;
     QString login_;
-    QList<const Uv*> uvs_;
+    QList<const Semester*> semesters_;
+
 };
 
 #endif // STUDENT_H

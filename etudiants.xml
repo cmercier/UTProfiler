@@ -1,16 +1,40 @@
 <etudiants>
     <etudiant>
-        <login>cmercier</cmercier>
+        <login>cmercier</login>
         <prenom>Clement</prenom>
         <nom>Mercier</nom>
+        <cursus>Ingénieur - Tronc Commun</cursus>
+        <cursus>GI</cursus>
+        <semestre>
+            <titre>A13</titre>
+            <uv>NF16</uv>
+            <uv>SR01</uv>
+        </semestre>
+        <semestre>
+            <titre>P14</titre>
+            <uv>LO21</uv>
+            <uv>NF17</uv>
+        </semestre>
+        
+        <equivalence>
+            <cs>6</cs>
+            <tm>12</tm>
+            <tsh>4</tsh>
+            <sp>6</sp>
+        </equivalence>
+    </etudiant>
+    <etudiant>
+        <login>aabrante</login>
+        <prenom>Alexandre</prenom>
+        <nom>Abrantes</nom>
         <cursus>Ingénieur - Tronc Commun</cursus>
         <cursus>GI</cursus>
         <uv>LO21</uv>
         <uv>NF17</uv>
         <equivalence>
-            <cs>6</cs>
-            <tm>12</tm>
-            <tsh>4</tsh>
+            <cs>12</cs>
+            <tm>18</tm>
+            <tsh>8</tsh>
             <sp>6</sp>
         </equivalence>
     </etudiant>

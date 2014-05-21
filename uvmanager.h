@@ -31,8 +31,9 @@ private:
     UVManager& operator=(const UVManager& um);
     void addDegree(QDomElement &element,Degree *parent = 0);
     void addDegrees(Student *student, QDomElement &element);
+    void addSemesters(Student *student, QDomElement &element);
     void addUvs(Degree *degree, QDomElement &element);
-    void addUvs(Student *student, QDomElement &element);
+    void addUvs(Semester *semester, QDomElement &element);
 
     static UVManager* instance_;
     QList<Degree*> degrees_;
