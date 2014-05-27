@@ -11,7 +11,7 @@ enum Category
 
 enum Grade
 {
-    A, B, C, D, E, F, FX, RES, ABS, /* en cours */ EC
+    A, B, C, D, E, F, FX, RES, ABS, /* en cours */ EC, UndefinedGrade
 };
 
 class Uv
@@ -22,6 +22,7 @@ public:
     const QString & code() const {return code_;}
     unsigned int credits() const {return credits_;}
     bool fall() const {return fall_;}
+    static QString gradeToString(Grade grade);
     bool spring() const {return spring_;}
     void setCategory(Category category) {category_ = category;}
     void setCredits(unsigned int credits) {credits_ = credits;}
@@ -30,6 +31,7 @@ public:
     void setSpring(bool spring) {spring_ = spring;}
     void setTitle(const QString &title) {title_ = title;}
     static Category stringToCategory(const QString &categoryString);
+    static Grade stringToGrade(const QString &gradeString);
     const QString & title() const {return title_;}
 
 private:

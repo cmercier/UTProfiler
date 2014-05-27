@@ -65,9 +65,7 @@ void UVManager::addUvs(Semester *semester, QDomElement &element)
 {
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
-        const Uv *uv = uvFromCode(uvElement.text());
-        if(uv)
-            semester->addUv(uv);
+        semester->addUv(uvElement.firstChildElement("code").text(), Uv::stringToGrade(uvElement.firstChildElement("note").text()));
     }
 }
 

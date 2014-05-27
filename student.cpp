@@ -1,4 +1,5 @@
 #include "student.h"
+#include "uv.h"
 
 Student::Student()
 {
@@ -20,8 +21,8 @@ Semester::Semester()
 {
 }
 
-void Semester::addUv(const Uv *uv)
+void Semester::addUv(QString code, Grade grade)
 {
-    if(!uvs_.contains(uv))
-        uvs_.push_back(uv);
+    if(!uvs_.contains(code))
+        uvs_[code] = grade;
 }

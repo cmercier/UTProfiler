@@ -1,6 +1,7 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 #include <QList>
+#include <QMap>
 #include <QString>
 #include "uv.h"
 #include "degree.h"
@@ -8,10 +9,10 @@
 class Semester
 {
 public:
-    void addUv(const Uv *uv);
+    void addUv(QString, Grade);
     const QString & title() const {return title_;}
     void setTitle(const QString &title) {title_ = title;}
-    const QList<const Uv*>& uvs() const {return uvs_;}
+    const QMap<QString, Grade> uvs() const {return uvs_;}
 
 private:
     Semester();
@@ -21,7 +22,7 @@ private:
     friend class SessionManager;
 
     QString title_;
-    QList<const Uv*> uvs_;
+    QMap<QString, Grade> uvs_; // doute sur la référence constante
 };
 
 class Student
