@@ -17,6 +17,22 @@ void Student::addSemester(const Semester *semester)
         semesters_.push_back(semester);
 }
 
+void Student::addUV(const QString& codeUV, const QString& semester, Grade grade)
+{
+    /*for(int i = 0; i < semesters_.size(); i++)
+    {
+        if (semesters_[i]->title() = semester)
+            semesters_[i]->addUv(codeUV, grade);
+        else
+        {
+            Semester *semesterP = new Semester();
+            semesterP->setTitle(semester);
+            semesterP->addUv(codeUV, grade);
+            addSemester(semesterP);
+        }
+    }*/
+}
+
 Semester::Semester()
 {
 }

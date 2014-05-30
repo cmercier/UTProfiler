@@ -52,10 +52,70 @@ Curriculum::Curriculum():
     updateStudent();
 }
 
+void Curriculum::addUV()
+{
+    //student_->;
+}
+
+void Curriculum::addDegree()
+{
+    student_->addDegree(selectedDegree_);
+    updateStudent();
+}
+
 void Curriculum::editStudent(bool edit)
 {
     editStudent_ = edit;
     updateStudent();
+}
+
+void Curriculum::selectDegree(const QString &title)
+{
+   /*
+     * If the user selects another option in a higher combo box, remove the sub combo boxes
+     * For exemple, if the current state is : Branche -> GI -> SRI
+     * and the user selects Tronc Commun instead
+     * GI and SRI will be removed and the new state will be : Tronc Commun
+     */
+    selectedDegree_ = UVManager::instance().degreeWithTitle(title);
+    int depth;
+    selectedDegree_ ? depth = selectedDegree_->depth() : depth = 0;
+    while(newDegreeLayout_->count() > depth + 2)
+    {
+        QLayoutItem* item = newDegreeLayout_->takeAt(newDegreeLayout_->count() - 1);
+        newDegreeLayout_->removeItem(item);
+        delete item->widget();
+        delete item;
+    }
+    newDegreeLayout_->update();
+
+    /*
+     * Add the sub combo box if there is one
+     * For exemple, if the user selects Branche
+     * A new combo box will show with the options :
+     * PCB, SRI, ...
+     */
+    QList<const Degree*> children = UVManager::instance().degreesWithParent(title);
+    if(!children.isEmpty())
+    {
+        QComboBox* subDegree = new QComboBox;
+        subDegree->insertItem(0,"Choix " + children.first()->type());
+
+        for(int i = 0; i < children.size(); i++)
+        {
+            subDegree->insertItem(i + 1,children.at(i)->title());
+        }
+
+        newDegreeLayout_->addWidget(subDegree);
+        QObject::connect(subDegree,SIGNAL(activated(QString)),this,SLOT(selectDegree(QString)));
+    }
+    newDegreeLayout_->addStretch(-1);
+
+    QPushButton* addDegree = new QPushButton("Ajouter le cursus");
+    addDegree->setCheckable(true);
+    addDegree->setChecked(false);
+    QObject::connect(addDegree,SIGNAL(clicked()),this,SLOT(addDegree()));
+    newDegreeLayout_->addWidget(addDegree);
 }
 
 void Curriculum::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree)
@@ -129,7 +189,7 @@ void Curriculum::loadSemesters(const Student* student) const
 void Curriculum::updateStudent()
 {
     // pour tester
-    Student* student = UVManager::instance().students()[0];
+    student_ = UVManager::instance().students()[0];
 
     // Refresh
     Utilities::clearLayout(semestersLayout_);
@@ -141,7 +201,7 @@ void Curriculum::updateStudent()
 
     // Student
     QLabel* studentLabel = new QLabel("Etudiant (login) : ");
-    QLabel* login_ = new QLabel(student->login());
+    QLabel* login_ = new QLabel(student_->login());
 
     studentLayout_->addWidget(studentLabel);
     studentLayout_->addWidget(login_);
@@ -149,9 +209,9 @@ void Curriculum::updateStudent()
 
     // Identity
     QLabel* identityLabel = new QLabel("Identité :");
-    firstName_ = new QLineEdit(student->firstName());
+    firstName_ = new QLineEdit(student_->firstName());
     firstName_->setReadOnly(!editStudent_);
-    lastName_ = new QLineEdit(student->lastName());
+    lastName_ = new QLineEdit(student_->lastName());
     lastName_->setReadOnly(!editStudent_);
     identityLayout_->addWidget(identityLabel);
     identityLayout_->addWidget(firstName_);
@@ -159,10 +219,10 @@ void Curriculum::updateStudent()
 
     // Equivalences
     QLabel* equivalenceLabel = new QLabel("Equivalences :");
-    equivalenceCs_ = new QLineEdit(QString::number(student->equivalenceCs()));
-    equivalenceTm_ = new QLineEdit(QString::number(student->equivalenceTm()));
-    equivalenceTsh_ = new QLineEdit(QString::number(student->equivalenceTsh()));
-    equivalenceSp_ = new QLineEdit(QString::number(student->equivalenceSp()));
+    equivalenceCs_ = new QLineEdit(QString::number(student_->equivalenceCs()));
+    equivalenceTm_ = new QLineEdit(QString::number(student_->equivalenceTm()));
+    equivalenceTsh_ = new QLineEdit(QString::number(student_->equivalenceTsh()));
+    equivalenceSp_ = new QLineEdit(QString::number(student_->equivalenceSp()));
     equivalenceCs_->setReadOnly(!editStudent_);
     equivalenceTm_->setReadOnly(!editStudent_);
     equivalenceTsh_->setReadOnly(!editStudent_);
@@ -201,20 +261,18 @@ void Curriculum::updateStudent()
             }
         }
 
-        QPushButton* addDegree = new QPushButton("Ajouter le cursus");
-        addDegree->setCheckable(true);
-        addDegree->setChecked(false);
+        //QPushButton* addDegree = new QPushButton("Ajouter le cursus");
         //QObject::connect(addDegree,SIGNAL(toggled(bool)),this,SLOT(editStudent(bool)));
 
         newDegreeLayout_->addWidget(degree_);
         newDegreeLayout_->addStretch(-1);
-        newDegreeLayout_->addWidget(addDegree);
+        //newDegreeLayout_->addWidget(addDegree);
 
     }
 
-    for(int i = 0; i <student->degrees().size(); i++)
+    for(int i = 0; i <student_->degrees().size(); i++)
     {
-        const Degree* degree = student->degrees()[i];
+        const Degree* degree = student_->degrees()[i];
 
         QHBoxLayout* degreeLayout = new QHBoxLayout;
 
@@ -230,73 +288,37 @@ void Curriculum::updateStudent()
     {
         QLabel* uvLabel = new QLabel("UV : ");
         QPushButton* addUV = new QPushButton("Ajouter l'UV");
-        QLabel* codeLabel = new QLabel("Code de l'UV : ");
-        QLineEdit* code = new QLineEdit;
+
+        code_ = new QComboBox;
+        code_->insertItem(0, "Choix de l'UV");
+        QList<const Uv*> uvs;
+        uvs = UVManager::instance().uvs();
+        for (int i = 0; i < uvs.size(); i++)
+        {
+            code_->insertItem(i + 1, uvs[i]->code());
+        }
+
         QLabel* semesterLabel = new QLabel("Semestre : ");
-        QLineEdit* semester = new QLineEdit;
-        QLabel* gradeLabel = new QLabel("Note : ");
-        QLineEdit* grade = new QLineEdit;
-        addUV->setCheckable(true);
-        addUV->setChecked(false);
-        //QObject::connect(addUV,SIGNAL(toggled(bool)),this,SLOT(editStudent(bool)));
+        semester_ = new QLineEdit;
+        semester_->setFixedWidth(50);
+
+        grade_ = new QComboBox;
+        grade_->insertItem(0, "Choix de la note");
+        for (int i = A; i <= EC; i++)
+        {
+            grade_->insertItem(i + 1, Uv::gradeToString(static_cast<Grade>(i)));
+        }
+
+        QObject::connect(addUV,SIGNAL(clicked()),this,SLOT(addUV()));
+
         uvLayout_->addWidget(uvLabel);
-        uvLayout_->addWidget(codeLabel);
-        uvLayout_->addWidget(code);
+        uvLayout_->addWidget(code_);
         uvLayout_->addWidget(semesterLabel);
-        uvLayout_->addWidget(semester);
-        uvLayout_->addWidget(gradeLabel);
-        uvLayout_->addWidget(grade);
+        uvLayout_->addWidget(semester_);
+        uvLayout_->addWidget(grade_);
+        uvLayout_->insertStretch(-1);
         uvLayout_->addWidget(addUV);
     }
 
-    loadSemesters(student);
-}
-
-void Curriculum::selectDegree(const QString &title)
-{
-   /*
-     * If the user selects another option in a higher combo box, remove the sub combo boxes
-     * For exemple, if the current state is : Branche -> GI -> SRI
-     * and the user selects Tronc Commun instead
-     * GI and SRI will be removed and the new state will be : Tronc Commun
-     */
-    selectedDegree_ = UVManager::instance().degreeWithTitle(title);
-    int depth;
-    selectedDegree_ ? depth = selectedDegree_->depth() : depth = 0;
-    while(newDegreeLayout_->count() > depth + 2)
-    {
-        QLayoutItem* item = newDegreeLayout_->takeAt(newDegreeLayout_->count() - 1);
-        newDegreeLayout_->removeItem(item);
-        delete item->widget();
-        delete item;
-    }
-    newDegreeLayout_->update();
-
-    /*
-     * Add the sub combo box if there is one
-     * For exemple, if the user selects Branche
-     * A new combo box will show with the options :
-     * PCB, SRI, ...
-     */
-    QList<const Degree*> children = UVManager::instance().degreesWithParent(title);
-    if(!children.isEmpty())
-    {
-        QComboBox* subDegree = new QComboBox;
-        subDegree->insertItem(0,"Choix " + children.first()->type());
-
-        for(int i = 0; i < children.size(); i++)
-        {
-            subDegree->insertItem(i + 1,children.at(i)->title());
-        }
-
-        newDegreeLayout_->addWidget(subDegree);
-        QObject::connect(subDegree,SIGNAL(activated(QString)),this,SLOT(selectDegree(QString)));
-    }
-    newDegreeLayout_->addStretch(-1);
-
-    QPushButton* addDegree = new QPushButton("Ajouter le cursus");
-    addDegree->setCheckable(true);
-    addDegree->setChecked(false);
-    //QObject::connect(addDegree,SIGNAL(toggled(bool)),this,SLOT(editStudent(bool)));
-    newDegreeLayout_->addWidget(addDegree);
+    loadSemesters(student_);
 }

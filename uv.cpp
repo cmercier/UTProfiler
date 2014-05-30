@@ -62,10 +62,8 @@ QString Uv::gradeToString(Grade grade)
         return "RES";
     if(grade == ABS)
         return "ABS";
-    if(grade == EC)
+    else//(grade == EC)
         return "EC";
-
-    return "UndefinedGrade";
 }
 
 Grade Uv::stringToGrade(const QString &gradeString)
@@ -88,8 +86,6 @@ Grade Uv::stringToGrade(const QString &gradeString)
         return RES;
     if(gradeString == "ABS")
         return ABS;
-    if(gradeString == "EC")
+    else//(gradeString == "EC")
         return EC;
-
-    return UndefinedGrade;
 }

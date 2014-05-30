@@ -11,7 +11,7 @@ enum Category
 
 enum Grade
 {
-    A, B, C, D, E, F, FX, RES, ABS, /* en cours */ EC, UndefinedGrade
+    A, B, C, D, E, F, FX, RES, ABS, /* en cours */ EC
 };
 
 class Uv

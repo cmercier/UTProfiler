@@ -20,6 +20,7 @@ private:
     Semester& operator=(const Semester &semester);
     friend class UVManager;
     friend class SessionManager;
+    friend class Student;
 
     QString title_;
     QMap<QString, Grade> uvs_; // doute sur la référence constante
@@ -30,6 +31,7 @@ class Student
 public:
     void addDegree(const Degree *degree);
     void addSemester(const Semester *semester);
+    void addUV(const QString &codeUV, const QString &semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}
     unsigned int equivalenceCs() const {return equivalenceCs_;}
     unsigned int equivalenceTm() const {return equivalenceTm_;}
