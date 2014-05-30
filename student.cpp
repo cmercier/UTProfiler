@@ -11,26 +11,28 @@ void Student::addDegree(const Degree *degree)
         degrees_.push_back(degree);
 }
 
-void Student::addSemester(const Semester *semester)
+void Student::addSemester(Semester *semester)
 {
     if(!semesters_.contains(semester))
         semesters_.push_back(semester);
 }
 
-void Student::addUV(const QString& codeUV, const QString& semester, Grade grade)
+void Student::addUV(const QString codeUV, const QString semester, Grade grade)
 {
-    /*for(int i = 0; i < semesters_.size(); i++)
+    // Si le semestre existe déjà
+    for(int i = 0; i < semesters_.length(); i++)
     {
-        if (semesters_[i]->title() = semester)
-            semesters_[i]->addUv(codeUV, grade);
-        else
+        if (semesters_[i]->title() == semester)
         {
-            Semester *semesterP = new Semester();
-            semesterP->setTitle(semester);
-            semesterP->addUv(codeUV, grade);
-            addSemester(semesterP);
+            semesters_[i]->addUv(codeUV, grade);
+            return;
         }
-    }*/
+    }
+    // Sinon
+    Semester *semesterP = new Semester();
+    semesterP->setTitle(semester);
+    semesterP->addUv(codeUV, grade);
+    addSemester(semesterP);
 }
 
 Semester::Semester()

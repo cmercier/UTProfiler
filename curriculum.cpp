@@ -54,7 +54,9 @@ Curriculum::Curriculum():
 
 void Curriculum::addUV()
 {
-    //student_->;
+    student_->addUV(code_->currentText(), semester_->text(), Uv::stringToGrade(grade_->currentText()));
+    updateStudent();
+
 }
 
 void Curriculum::addDegree()

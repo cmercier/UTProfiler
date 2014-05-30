@@ -30,8 +30,8 @@ class Student
 {
 public:
     void addDegree(const Degree *degree);
-    void addSemester(const Semester *semester);
-    void addUV(const QString &codeUV, const QString &semester, Grade grade);
+    void addSemester(Semester *semester);
+    void addUV(const QString codeUV, const QString semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}
     unsigned int equivalenceCs() const {return equivalenceCs_;}
     unsigned int equivalenceTm() const {return equivalenceTm_;}
@@ -47,7 +47,7 @@ public:
     void setFirstName(const QString &firstName) {firstName_ = firstName;}
     void setLastName(const QString &lastName) {lastName_ = lastName;}
     void setLogin(const QString &login) {login_ = login;}
-    const QList<const Semester*>& semesters() const {return semesters_;}
+    const QList<Semester*>& semesters() const {return semesters_;}
 
 private:
     Student();
@@ -64,7 +64,7 @@ private:
     QString firstName_;
     QString lastName_;
     QString login_;
-    QList<const Semester*> semesters_;
+    QList<Semester*> semesters_;
 
 };
 
