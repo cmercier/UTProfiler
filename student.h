@@ -1,6 +1,7 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 #include <QList>
+#include <QMap>
 #include <QString>
 #include "uv.h"
 #include "degree.h"
@@ -8,10 +9,11 @@
 class Semester
 {
 public:
-    void addUv(const Uv *uv);
+    void addUv(const QString, const Grade);
+    void deleteUV(const QString& codeUV);
     const QString & title() const {return title_;}
     void setTitle(const QString &title) {title_ = title;}
-    const QList<const Uv*>& uvs() const {return uvs_;}
+    const QMap<QString, Grade> uvs() const {return uvs_;}
 
 private:
     Semester();
@@ -19,17 +21,21 @@ private:
     Semester& operator=(const Semester &semester);
     friend class UVManager;
     friend class SessionManager;
+    friend class Student;
 
     QString title_;
-    QList<const Uv*> uvs_;
+    QMap<QString, Grade> uvs_; // doute sur la référence constante
 };
 
 class Student
 {
 public:
     void addDegree(const Degree *degree);
-    void addSemester(const Semester *semester);
+    void addSemester(Semester *semester);
+    void addUV(const QString codeUV, const QString semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}
+    void deleteDegree(const QString& title);
+    void deleteUV(const QString& codeUV, const QString& semester);
     unsigned int equivalenceCs() const {return equivalenceCs_;}
     unsigned int equivalenceTm() const {return equivalenceTm_;}
     unsigned int equivalenceTsh() const {return equivalenceTsh_;}
@@ -44,7 +50,7 @@ public:
     void setFirstName(const QString &firstName) {firstName_ = firstName;}
     void setLastName(const QString &lastName) {lastName_ = lastName;}
     void setLogin(const QString &login) {login_ = login;}
-    const QList<const Semester*>& semesters() const {return semesters_;}
+    const QList<Semester*>& semesters() const {return semesters_;}
 
 private:
     Student();
@@ -61,7 +67,7 @@ private:
     QString firstName_;
     QString lastName_;
     QString login_;
-    QList<const Semester*> semesters_;
+    QList<Semester*> semesters_;
 
 };
 
