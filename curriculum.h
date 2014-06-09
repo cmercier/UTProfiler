@@ -15,8 +15,11 @@ public:
 public slots:
     void addUV();
     void addDegree();
+    void deleteDegree();
+    void deleteUV();
     void editStudent(bool edit);
     void selectDegree(const QString &title);
+    void updateUvs();
 
 
 private:
@@ -27,6 +30,10 @@ private:
     QComboBox* code_;
     QComboBox* degree_;
     QVBoxLayout* degreesLayout_;
+    QComboBox* deleteDegree_;
+    QComboBox* deleteUVCodeUV_;
+    QComboBox* deleteUVSemester_;
+    QHBoxLayout* deleteUvLayout_;
     bool editStudent_;
     QHBoxLayout* equivalence_;
     QLineEdit* equivalenceCs_;

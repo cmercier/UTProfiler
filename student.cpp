@@ -35,12 +35,41 @@ void Student::addUV(const QString codeUV, const QString semester, Grade grade)
     addSemester(semesterP);
 }
 
+void Student::deleteDegree(const QString& title)
+{
+    for (int i = 0; i < degrees_.size(); i++)
+    {
+        if (degrees_[i]->title() == title)
+        {
+            degrees_.removeAt(i);
+            return;
+        }
+    }
+}
+
+void Student::deleteUV(const QString& codeUV, const QString& semester)
+{
+    for (int i = 0; i < semesters_.size(); i++)
+    {
+        if (semesters_[i]->title() == semester)
+        {
+            semesters_[i]->deleteUV(codeUV);
+            return;
+        }
+    }
+}
+
 Semester::Semester()
 {
 }
 
-void Semester::addUv(QString code, Grade grade)
+void Semester::addUv(const QString code, const Grade grade)
 {
     if(!uvs_.contains(code))
         uvs_[code] = grade;
+}
+
+void Semester::deleteUV(const QString& codeUV)
+{
+    uvs_.remove(codeUV);
 }
