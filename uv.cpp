@@ -1,6 +1,12 @@
 #include "uv.h"
 
-Uv::Uv()
+Uv::Uv():
+    category_(UndefinedCategory),
+    credits_(0),
+    code_(QString()),
+    fall_(true),
+    spring_(true),
+    title_(QString())
 {
 }
 
