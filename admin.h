@@ -16,15 +16,22 @@ public slots:
     void editUv();
     void editUv(QString);
     void removeUv();
+    void showAddDegreePanel(bool);
     void showAddUvPanel(bool);
     void showEditUvPanel(bool);
     void showRemoveUvButton(QString);
 
 private:
+    void createAddDegreePanel();
     void createAddUvPanel();
     void createEditUvPanel();
     void updateUvLists();
 
+    QLineEdit* addDegree_name_;
+    QComboBox* addDegree_uvs_;
+    QVBoxLayout* addDegree_uvs_layout_;
+    QWidget* addDegreePanel_;
+    QScrollArea* addDegree_scrollArea_;
     QComboBox* addUv_category_;
     QLineEdit* addUv_code_;
     QSpinBox* addUv_credits_;

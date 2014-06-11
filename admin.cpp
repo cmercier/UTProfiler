@@ -51,6 +51,20 @@ Admin::Admin()
     removeUvLayout->insertStretch(-1);
     mainLayout->addLayout(removeUvLayout);
 
+    // Add degree
+    QPushButton* addDegreeButton = new QPushButton("Ajouter un cursus");
+    addDegreeButton->setCheckable(true);
+    QObject::connect(addDegreeButton,SIGNAL(clicked(bool)),this,SLOT(showAddDegreePanel(bool)));
+    QHBoxLayout* addDegreeLayout = new QHBoxLayout;
+    addDegreeLayout->addWidget(addDegreeButton);
+    addDegreeLayout->insertStretch(-1);
+    createAddDegreePanel();
+    addDegreePanel_->setVisible(false);
+    QVBoxLayout* v3 = new QVBoxLayout;
+    v3->addLayout(addDegreeLayout);
+    v3->addWidget(addDegreePanel_);
+    mainLayout->addLayout(v3);
+
     updateUvLists();
 
     mainLayout->insertStretch(-1);
@@ -78,6 +92,40 @@ void Admin::addUv()
         showAddUvPanel(false);
         QMessageBox::information(this,"","Uv ajoutée.",QMessageBox::Ok);
     }
+}
+
+void Admin::createAddDegreePanel()
+{
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    addDegreePanel_ = new QWidget;
+    addDegreePanel_->setLayout(mainLayout);
+    int labelWidth = 60;
+
+    // Name
+    QLabel* nameLabel = new QLabel("Nom : ");
+    nameLabel->setFixedWidth(labelWidth);
+    addDegree_name_ = new QLineEdit;
+    QHBoxLayout* nameLayout = new QHBoxLayout;
+    nameLayout->addWidget(nameLabel);
+    nameLayout->addWidget(addDegree_name_);
+    nameLayout->insertStretch(-1);
+    mainLayout->addLayout(nameLayout);
+
+    // Add uv
+    QLabel* addDegreeLabel = new QLabel("Uvs :");
+    addDegreeLabel->setFixedWidth(labelWidth);
+    QHBoxLayout* addDegreeLayout = new QHBoxLayout;
+    addDegreeLayout->addWidget(addDegreeLabel);
+    addDegree_scrollArea_ = new QScrollArea;
+    QWidget* saw = new QWidget;
+    addDegree_uvs_layout_ = new QVBoxLayout;
+    saw->setLayout(addDegree_uvs_layout_);
+    addDegree_scrollArea_->setWidgetResizable(true);
+    addDegree_scrollArea_->setFixedWidth(150);
+    addDegree_scrollArea_->setWidget(saw);
+    addDegreeLayout->addWidget(addDegree_scrollArea_);
+    addDegreeLayout->insertStretch(-1);
+    mainLayout->addLayout(addDegreeLayout);
 }
 
 void Admin::createAddUvPanel()
@@ -276,6 +324,11 @@ void Admin::editUv(QString code)
     showEditUvPanel(true);
 }
 
+void Admin::showAddDegreePanel(bool show)
+{
+    addDegreePanel_->setVisible(show);
+}
+
 void Admin::showAddUvPanel(bool show)
 {
     addUvPanel_->setVisible(show);
@@ -300,12 +353,17 @@ void Admin::updateUvLists()
 
     editUv_comboBox_->clear();
     removeUv_comboBox_->clear();
+    Utilities::clearLayout(addDegree_uvs_layout_);
 
     for(int i = 0; i < uvs.size(); i++)
     {
         QString code = uvs.at(i)->code();
         editUv_comboBox_->addItem(code);
         removeUv_comboBox_->addItem(code);
+
+        QCheckBox* addDegreeUv = new QCheckBox(code);
+        addDegreeUv->setChecked(false);
+        addDegree_uvs_layout_->addWidget(addDegreeUv);
     }
 
     editUv_comboBox_->insertItem(0,"Selectionnez une Uv...");
