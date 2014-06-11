@@ -20,6 +20,9 @@ void Student::addSemester(Semester *semester)
 void Student::addUV(const QString codeUV, const QString semester, Grade grade)
 {
     // Si le semestre existe déjà
+    if (semester.isEmpty())
+        return;
+
     for(int i = 0; i < semesters_.length(); i++)
     {
         if (semesters_[i]->title() == semester)

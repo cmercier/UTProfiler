@@ -58,6 +58,9 @@ Curriculum::Curriculum():
 
 void Curriculum::addUV()
 {
+    if (semester_->text().isEmpty() || code_->currentIndex() == 0 || grade_->currentIndex() == 0)
+        return;
+
     student_->addUV(code_->currentText(), semester_->text(), Uv::stringToGrade(grade_->currentText()));
     updateStudent();
 
@@ -242,6 +245,7 @@ void Curriculum::updateStudent()
 
     // Student
     QLabel* studentLabel = new QLabel("Etudiant (login) : ");
+    studentLabel->setFixedWidth(80);
     QLabel* login_ = new QLabel(student_->login());
 
     studentLayout_->addWidget(studentLabel);
@@ -250,32 +254,52 @@ void Curriculum::updateStudent()
 
     // Identity
     QLabel* identityLabel = new QLabel("Identité :");
+    identityLabel->setFixedWidth(80);
     firstName_ = new QLineEdit(student_->firstName());
     firstName_->setReadOnly(!editStudent_);
+    firstName_->setFixedWidth(100);
     lastName_ = new QLineEdit(student_->lastName());
     lastName_->setReadOnly(!editStudent_);
+    lastName_->setFixedWidth(100);
     identityLayout_->addWidget(identityLabel);
     identityLayout_->addWidget(firstName_);
     identityLayout_->addWidget(lastName_);
+    identityLayout_->insertStretch(-1);
 
     // Equivalences
     QLabel* equivalenceLabel = new QLabel("Equivalences :");
+    equivalenceLabel->setFixedWidth(80);
+    QLabel* equivalenceCsLabel = new QLabel("CS :");
+    QLabel* equivalenceTmLabel = new QLabel("TM :");
+    QLabel* equivalenceTshLabel = new QLabel("TSH :");
+    QLabel* equivalenceSpLabel = new QLabel("SP :");
     equivalenceCs_ = new QLineEdit(QString::number(student_->equivalenceCs()));
     equivalenceTm_ = new QLineEdit(QString::number(student_->equivalenceTm()));
     equivalenceTsh_ = new QLineEdit(QString::number(student_->equivalenceTsh()));
     equivalenceSp_ = new QLineEdit(QString::number(student_->equivalenceSp()));
+    equivalenceCs_->setFixedWidth(50);
+    equivalenceTm_->setFixedWidth(50);
+    equivalenceTsh_->setFixedWidth(50);
+    equivalenceSp_->setFixedWidth(50);
     equivalenceCs_->setReadOnly(!editStudent_);
     equivalenceTm_->setReadOnly(!editStudent_);
     equivalenceTsh_->setReadOnly(!editStudent_);
     equivalenceSp_->setReadOnly(!editStudent_);    
     equivalence_->addWidget(equivalenceLabel);
+    equivalence_->addWidget(equivalenceCsLabel);
     equivalence_->addWidget(equivalenceCs_);
+    equivalence_->addWidget(equivalenceTmLabel);
     equivalence_->addWidget(equivalenceTm_);
+    equivalence_->addWidget(equivalenceTshLabel);
     equivalence_->addWidget(equivalenceTsh_);
-    equivalence_->addWidget(equivalenceSp_);    
+    equivalence_->addWidget(equivalenceSpLabel);
+    equivalence_->addWidget(equivalenceSp_);
+    equivalence_->insertStretch(-1);
+
 
     // Degrees    
     QLabel* degreeLabel = new QLabel("Cursus :");
+    degreeLabel->setFixedWidth(80);
     newDegreeLayout_ = new QHBoxLayout;
     newDegreeLayout_->addWidget(degreeLabel);
     degreesLayout_->addLayout(newDegreeLayout_);
@@ -308,8 +332,9 @@ void Curriculum::updateStudent()
         newDegreeLayout_->addWidget(degree_);
         newDegreeLayout_->addStretch(-1);
         newDegreeLayout_->addWidget(addDegree);
-
     }
+    else
+        newDegreeLayout_->addStretch(-1);
 
     for(int i = 0; i <student_->degrees().size(); i++)
     {
@@ -347,9 +372,12 @@ void Curriculum::updateStudent()
     }
 
     // Semesters
+
+    // Add UV
     if (editStudent_)
     {
         QLabel* uvLabel = new QLabel("UV : ");
+        uvLabel->setFixedWidth(80);
         QPushButton* addUV = new QPushButton("Ajouter l'UV");
 
         code_ = new QComboBox;
