@@ -28,11 +28,15 @@ void MainWindow::createStackedWidget()
     QListWidgetItem* curriculumItem = new QListWidgetItem;
     curriculumItem->setText("Mon parcours");
     lw->insertItem(1,curriculumItem);
+    QListWidgetItem* adminItem = new QListWidgetItem;
+    adminItem->setText("Admin");
+    lw->insertItem(2,adminItem);
     /*QListWidgetItem *userItem = new QListWidgetItem;
     userItem->setText("Espace perso");
     lw->insertItem(2,userItem);*/
 
     // Create the pages
+    admin_ = new Admin;
     catalog_ = new Catalog;
     curriculum_ = new Curriculum;
 
@@ -40,6 +44,7 @@ void MainWindow::createStackedWidget()
     navigationStackedWidget_ = new QStackedWidget;
     navigationStackedWidget_->addWidget(catalog_);
     navigationStackedWidget_->addWidget(curriculum_);
+    navigationStackedWidget_->addWidget(admin_);
 
     QHBoxLayout* mainLayout = new QHBoxLayout;
     mainLayout->addWidget(lw);
