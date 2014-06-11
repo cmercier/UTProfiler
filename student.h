@@ -9,7 +9,8 @@
 class Semester
 {
 public:
-    void addUv(QString, Grade);
+    void addUv(const QString, const Grade);
+    void deleteUV(const QString& codeUV);
     const QString & title() const {return title_;}
     void setTitle(const QString &title) {title_ = title;}
     const QMap<QString, Grade> uvs() const {return uvs_;}
@@ -33,6 +34,8 @@ public:
     void addSemester(Semester *semester);
     void addUV(const QString codeUV, const QString semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}
+    void deleteDegree(const QString& title);
+    void deleteUV(const QString& codeUV, const QString& semester);
     unsigned int equivalenceCs() const {return equivalenceCs_;}
     unsigned int equivalenceTm() const {return equivalenceTm_;}
     unsigned int equivalenceTsh() const {return equivalenceTsh_;}

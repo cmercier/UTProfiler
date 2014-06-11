@@ -46,8 +46,12 @@ Curriculum::Curriculum():
     semestersScrollArea_->setWidget(widget);
     semestersScrollArea_->setWidgetResizable(true);
 
+    // Delete UV
+    deleteUvLayout_ = new QHBoxLayout;
+
     mainLayout->addLayout(l1);
     mainLayout->addWidget(semestersScrollArea_);
+    mainLayout->addLayout(deleteUvLayout_);
 
     updateStudent();
 }
@@ -62,6 +66,18 @@ void Curriculum::addUV()
 void Curriculum::addDegree()
 {
     student_->addDegree(selectedDegree_);
+    updateStudent();
+}
+
+void Curriculum::deleteDegree()
+{
+    student_->deleteDegree(deleteDegree_->currentText());
+    updateStudent();
+}
+
+void Curriculum::deleteUV()
+{
+    student_->deleteUV(deleteUVCodeUV_->currentText(), deleteUVSemester_->currentText());
     updateStudent();
 }
 
@@ -120,6 +136,25 @@ void Curriculum::selectDegree(const QString &title)
     newDegreeLayout_->addWidget(addDegree);
 }
 
+void Curriculum::updateUvs()
+{
+    deleteUVCodeUV_->clear();
+    deleteUVCodeUV_->insertItem(0, "Choix de l'UV");
+
+    for(int i = 0; i < student_->semesters().size(); i++)
+    {
+        if (student_->semesters()[i]->title() == deleteUVSemester_->currentText())
+        {
+            QMapIterator<QString, Grade> it(student_->semesters()[i]->uvs());
+            while (it.hasNext()) {
+                it.next();
+                deleteUVCodeUV_->insertItem(i + 1, it.key());
+            }
+            return;
+        }
+    }
+}
+
 void Curriculum::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree)
 {
     QLabel* degreeTitleLabel;
@@ -131,10 +166,13 @@ void Curriculum::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree
     }
     else
     {
-        degreeTitleLabel = new QLabel(degree->title());
+        degreeTitleLabel = new QLabel(degree->title());        
     }
 
     degreeLayout->addWidget(degreeTitleLabel);
+
+
+
 }
 
 void Curriculum::loadSemesters(const Student* student) const
@@ -200,6 +238,7 @@ void Curriculum::updateStudent()
     Utilities::clearLayout(identityLayout_);
     Utilities::clearLayout(equivalence_);
     Utilities::clearLayout(uvLayout_);
+    Utilities::clearLayout(deleteUvLayout_);
 
     // Student
     QLabel* studentLabel = new QLabel("Etudiant (login) : ");
@@ -263,12 +302,12 @@ void Curriculum::updateStudent()
             }
         }
 
-        //QPushButton* addDegree = new QPushButton("Ajouter le cursus");
-        //QObject::connect(addDegree,SIGNAL(toggled(bool)),this,SLOT(editStudent(bool)));
+        QPushButton* addDegree = new QPushButton("Ajouter le cursus");
+        QObject::connect(addDegree,SIGNAL(toggled(bool)),this,SLOT(editStudent(bool)));
 
         newDegreeLayout_->addWidget(degree_);
         newDegreeLayout_->addStretch(-1);
-        //newDegreeLayout_->addWidget(addDegree);
+        newDegreeLayout_->addWidget(addDegree);
 
     }
 
@@ -281,9 +320,31 @@ void Curriculum::updateStudent()
         getParentDegree(degreeLayout, degree);
 
         degreeLayout->insertStretch(-1);
+
         degreesLayout_->addLayout(degreeLayout);
 
-    }    
+    }
+
+    if(editStudent_)
+    {
+        QHBoxLayout* deleteDegreeLayout = new QHBoxLayout;
+        deleteDegree_ = new QComboBox;
+
+        deleteDegree_->insertItem(0, "Choix du cursus");
+        for(int i = 0; i < student_->degrees().size(); i++)
+        {
+            deleteDegree_->insertItem(i + 1, student_->degrees()[i]->title());
+        }
+
+        QPushButton* deleteDegreeButton = new QPushButton("Supprimer le cursus");
+        QObject::connect(deleteDegreeButton,SIGNAL(clicked()),this,SLOT(deleteDegree()));
+
+        deleteDegreeLayout->addWidget(deleteDegree_);
+        deleteDegreeLayout->insertStretch(-1);
+        deleteDegreeLayout->addWidget(deleteDegreeButton);
+
+        degreesLayout_->addLayout(deleteDegreeLayout);
+    }
 
     // Semesters
     if (editStudent_)
@@ -320,6 +381,29 @@ void Curriculum::updateStudent()
         uvLayout_->addWidget(grade_);
         uvLayout_->insertStretch(-1);
         uvLayout_->addWidget(addUV);
+    }
+
+    // Delete UV
+    if(editStudent_)
+    {
+        deleteUVCodeUV_ = new QComboBox;
+        deleteUVSemester_ = new QComboBox;
+        QObject::connect(deleteUVSemester_,SIGNAL(activated(QString)),this,SLOT(updateUvs()));
+        deleteUVSemester_->insertItem(0, "Choix du semestre");
+
+        for(int i = 0; i < student_->semesters().size(); i++)
+        {
+            deleteUVSemester_->insertItem(i + 1, student_->semesters()[i]->title());
+        }
+
+        QPushButton* deleteUvButton = new QPushButton("Supprimer l'UV");
+        QObject::connect(deleteUvButton,SIGNAL(clicked()),this,SLOT(deleteUV()));
+
+
+        deleteUvLayout_->addWidget(deleteUVSemester_);
+        deleteUvLayout_->addWidget(deleteUVCodeUV_);
+        deleteUvLayout_->insertStretch(-1);
+        deleteUvLayout_->addWidget(deleteUvButton);
     }
 
     loadSemesters(student_);
