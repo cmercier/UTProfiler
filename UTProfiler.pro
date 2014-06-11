@@ -11,8 +11,7 @@ HEADERS += \
     catalog.h \
     utilities.h \
     sessionmanager.h \
-    curriculum.h \
-    admin.h
+    curriculum.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -25,5 +24,4 @@ SOURCES += \
     catalog.cpp \
     utilities.cpp \
     sessionmanager.cpp \
-    curriculum.cpp \
-    admin.cpp
+    curriculum.cpp

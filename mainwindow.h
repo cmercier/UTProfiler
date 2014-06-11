@@ -4,7 +4,6 @@
 #include "catalog.h"
 #include "curriculum.h"
 #include "sessionmanager.h"
-#include "admin.h"
 
 class MainWindow: public QMainWindow
 {
@@ -19,7 +18,6 @@ public slots:
 private:
     void createStackedWidget();
 
-    Admin* admin_;
     Catalog* catalog_;
     Curriculum* curriculum_;
     QStackedWidget* navigationStackedWidget_;
