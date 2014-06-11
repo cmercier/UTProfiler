@@ -17,6 +17,11 @@ enum Grade
 class Uv
 {
 public:
+    Uv();
+    Uv(const Uv& uv);
+    Uv(const QString &code, const QString &title, unsigned int credits, Category category, bool spring, bool fall);
+    Uv& operator=(const Uv& uv);
+
     Category category() const {return category_;}
     static QString categoryToString(Category category);
     const QString & code() const {return code_;}
@@ -35,12 +40,6 @@ public:
     const QString & title() const {return title_;}
 
 private:
-    Uv();
-    Uv(const Uv& uv);
-    Uv(const QString &code, const QString &title, unsigned int credits, Category category, bool spring, bool fall);
-    Uv& operator=(const Uv& uv);
-    friend class UVManager;
-
     Category category_;
     unsigned int credits_;
     QString code_;

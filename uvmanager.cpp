@@ -1,9 +1,18 @@
 #include "uvmanager.h"
 
 UVManager* UVManager::instance_ = 0;
+UVManager::Handler UVManager::handler_=Handler();
 
-UVManager::UVManager()
+UVManager::UVManager():
+    degreesFilePath_("formations.xml"),
+    studentsFilePath_("etudiants.xml"),
+    uvsFilePath_("UV_UTC.xml")
 {
+}
+
+UVManager::~UVManager()
+{
+    saveUvs(uvsFilePath_);
 }
 
 void UVManager::addDegree(QDomElement &element, Degree *parent)
@@ -27,7 +36,18 @@ void UVManager::addUv(Uv *uv)
     if(!uv)
         return;
 
-    uvs_.push_back(uv);
+    bool edited(false);
+    for(int i = 0; i < uvs_.size(); i++)
+    {
+        if(uvs_.at(i)->code() == uv->code())
+        {
+            uvs_.replace(i,uv);
+            edited = true;
+        }
+    }
+
+    if(!edited)
+        uvs_.push_back(uv);
 }
 
 void UVManager::addDegrees(Student *student, QDomElement &element)
@@ -102,9 +122,26 @@ const Degree* UVManager::degreeWithTitle(const QString &title)
 UVManager& UVManager::instance()
 {
     if(!instance_)
+    {
         instance_ = new UVManager;
+        UVManager::handler_.instance_ = instance_;
+    }
 
     return *instance_;
+}
+
+void UVManager::load()
+{
+    try
+    {
+        loadUvs(uvsFilePath_);
+        loadDegrees(degreesFilePath_);
+        loadStudents(studentsFilePath_);
+    }
+    catch(UTProfilerException e)
+    {
+        qDebug() << e.getInfo();
+    }
 }
 
 void UVManager::loadDegrees(const QString &fileName)
@@ -181,7 +218,19 @@ void UVManager::loadUvs(const QString &fileName)
     file.close();
 }
 
-void UVManager::save(const QString &fileName)
+void UVManager::removeUv(const QString &code)
+{
+    for(int i = 0; i < uvs_.size(); i++)
+    {
+        if(uvs_.at(i)->code() == code)
+        {
+            uvs_.removeAt(i);
+            return;
+        }
+    }
+}
+
+void UVManager::saveUvs(const QString &fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))

@@ -2,17 +2,7 @@
 
 MainWindow::MainWindow()
 {
-    try
-    {
-        UVManager::instance().loadUvs("UV_UTC.xml");
-        UVManager::instance().loadDegrees("formations.xml");
-        UVManager::instance().loadStudents("etudiants.xml");
-    }
-    catch(UTProfilerException e)
-    {
-        qDebug() << e.getInfo();
-    }
-
+    UVManager::instance().load();
     createStackedWidget();
 }
 
@@ -31,9 +21,6 @@ void MainWindow::createStackedWidget()
     QListWidgetItem* adminItem = new QListWidgetItem;
     adminItem->setText("Admin");
     lw->insertItem(2,adminItem);
-    /*QListWidgetItem *userItem = new QListWidgetItem;
-    userItem->setText("Espace perso");
-    lw->insertItem(2,userItem);*/
 
     // Create the pages
     admin_ = new Admin;
@@ -59,8 +46,5 @@ void MainWindow::createStackedWidget()
 
 void MainWindow::setTag(int index)
 {
-    //if((index == 1 || index == 2) && !SessionManager::instance().currentStudent())
-    //        SessionManager::instance().signIn(this);
-
     navigationStackedWidget_->setCurrentIndex(index);
 }
