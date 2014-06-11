@@ -7,13 +7,25 @@
         <cursus>GI</cursus>
         <semestre>
             <titre>A13</titre>
-            <uv>NF16</uv>
-            <uv>SR01</uv>
+            <uv>
+                <code>NF16</code>
+                <note>A</note>
+            </uv>
+            <uv>
+                <code>NF17</code>
+                <note>B</note>
+            </uv>
         </semestre>
         <semestre>
             <titre>P14</titre>
-            <uv>LO21</uv>
-            <uv>NF17</uv>
+            <uv>
+                <code>LO21</code>
+                <note>A</note>
+            </uv>
+            <uv>
+                <code>NF17</code>
+                <note>B</note>
+            </uv>
         </semestre>
         
         <equivalence>
@@ -29,8 +41,22 @@
         <nom>Abrantes</nom>
         <cursus>Ingénieur - Tronc Commun</cursus>
         <cursus>GI</cursus>
-        <uv>LO21</uv>
-        <uv>NF17</uv>
+        <semestre>
+            <titre>A13</titre>
+            <uv>
+                <code>NF16</code>
+                <note>A</note>
+            </uv>
+            <uv>
+                <code>NF17</code>
+                <note>B</note>
+            </uv>
+        </semestre>
+        <semestre>
+            <titre>P14</titre>
+            <uv>LO21</uv>
+            <uv>NF17</uv>
+        </semestre>        
         <equivalence>
             <cs>12</cs>
             <tm>18</tm>
