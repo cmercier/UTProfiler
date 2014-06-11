@@ -2,15 +2,20 @@
 #define DEGREE_H
 #include <QList>
 #include <QString>
+#include <QMap>
 #include "uv.h"
 
 class Degree
 {
 public:
     void addUv(const Uv *uv);
+    const QList<Degree*> &children() const {return children_;}
     int depth() const;
     const Degree* parent() const {return parent_;}
+    int quota(Category category) const;
+    const QMap<Category,int> & quotas() const {return quotas_;}
     void setParent(Degree *parent);
+    void setQuota(Category category,int quota);
     void setTitle(const QString &title) {title_ = title;}
     void setType(const QString &type) {type_ = type;}
     const QString & title() const {return title_;}
@@ -24,10 +29,11 @@ private:
     friend class UVManager;
     void addChild(Degree *child);
 
-    QString type_;
     QList<Degree*> children_;
     Degree* parent_;
+    QMap<Category,int> quotas_;
     QString title_;
+    QString type_;
     QList<const Uv*> uvs_;
 };
 

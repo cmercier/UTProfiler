@@ -12,7 +12,8 @@ UVManager::UVManager():
 
 UVManager::~UVManager()
 {
-    saveUvs(uvsFilePath_);
+    saveDegrees();
+    saveUvs();
 }
 
 void UVManager::addDegree(QDomElement &element, Degree *parent)
@@ -21,6 +22,7 @@ void UVManager::addDegree(QDomElement &element, Degree *parent)
     degree->setTitle(element.firstChildElement("titre").text());
     degree->setType(element.attribute("type","formation"));
     addUvs(degree,element);
+    addQuotas(degree,element);
 
     for(QDomElement childElement = element.firstChildElement("item"); !childElement.isNull(); childElement = childElement.nextSiblingElement("item"))
     {
@@ -86,6 +88,16 @@ void UVManager::addUvs(Semester *semester, QDomElement &element)
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
         semester->addUv(uvElement.firstChildElement("code").text(), Uv::stringToGrade(uvElement.firstChildElement("note").text()));
+    }
+}
+
+void UVManager::addQuotas(Degree *degree, QDomElement &element)
+{
+    for(QDomElement quotaElement = element.firstChildElement("quota"); !quotaElement.isNull(); quotaElement = quotaElement.nextSiblingElement("quota"))
+    {
+        Category category = Uv::stringToCategory(element.attribute("categorie"));
+        int quota = quotaElement.text().toInt();
+        degree->setQuota(category,quota);
     }
 }
 
@@ -230,13 +242,71 @@ void UVManager::removeUv(const QString &code)
     }
 }
 
-void UVManager::saveUvs(const QString &fileName)
+void UVManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &dom)
 {
-    QFile file(fileName);
+    QDomElement degreeElement = dom.createElement("item");
+    degreeElement.setAttribute("type",degree->type());
+    element.appendChild(degreeElement);
+
+    QDomElement titleElement = dom.createElement("titre");
+    titleElement.appendChild(dom.createTextNode(degree->title()));
+    degreeElement.appendChild(titleElement);
+
+    const QList<const Uv*> &uvs = degree->uvs();
+    for(int i = 0; i < uvs.size(); i++)
+    {
+        QDomElement uvElement = dom.createElement("uv");
+        uvElement.appendChild(dom.createTextNode(uvs.at(i)->code()));
+        degreeElement.appendChild(uvElement);
+    }
+
+    const QMap<Category,int> &quotas = degree->quotas();
+    QMapIterator<Category,int> it(quotas);
+    while(it.hasNext())
+    {
+        it.next();
+        QDomElement quotaElement = dom.createElement("quota");
+        quotaElement.setAttribute("categorie",Uv::categoryToString(it.key()));
+        quotaElement.appendChild(dom.createTextNode(QString::number(it.value())));
+        degreeElement.appendChild(quotaElement);
+    }
+
+    const QList<Degree*> &children = degree->children();
+    for(int i = 0; i < children.size(); i++)
+        saveDegree(children.at(i),degreeElement,dom);
+}
+
+void UVManager::saveDegrees()
+{
+    QFile file(degreesFilePath_);
     if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
     {
         //throw UTProfilerException("Failed to open " + fileName + " in UVManager::save.");
-        qDebug() << "Failed to open " << fileName << " in save";
+        qDebug() << "Failed to open " << degreesFilePath_ << " in save";
+        return;
+    }
+
+    QDomDocument dom;
+    dom.setContent(&file);
+
+    QDomElement degrees = dom.createElement("formations");
+    dom.appendChild(degrees);
+
+    for(int i = 0; i < degrees_.size(); i++)
+        if(degrees_.at(i)->depth() == 0)
+            saveDegree(degrees_.at(i),degrees,dom);
+
+    file.write(dom.toByteArray());
+    file.close();
+}
+
+void UVManager::saveUvs()
+{
+    QFile file(uvsFilePath_);
+    if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
+    {
+        //throw UTProfilerException("Failed to open " + fileName + " in UVManager::save.");
+        qDebug() << "Failed to open " << uvsFilePath_ << " in save";
         return;
     }
 

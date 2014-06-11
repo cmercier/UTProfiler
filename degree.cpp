@@ -25,10 +25,28 @@ int Degree::depth() const
     return 0;
 }
 
+int Degree::quota(Category category) const
+{
+    if(quotas_.contains(category))
+        return quotas_[category];
+    return 0;
+}
+
 void Degree::setParent(Degree *parent)
 {
     parent_ = parent;
 
     if(parent)
         parent->addChild(this);
+}
+
+void Degree::setQuota(Category category, int quota)
+{
+    if(quota <= 0)
+    {
+        if(quotas_.contains(category))
+            quotas_.remove(category);
+    }
+    else
+        quotas_[category] = quota;
 }

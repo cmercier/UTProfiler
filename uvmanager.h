@@ -33,10 +33,13 @@ private:
     void addSemesters(Student *student, QDomElement &element);
     void addUvs(Degree *degree, QDomElement &element);
     void addUvs(Semester *semester, QDomElement &element);
+    void addQuotas(Degree *degree, QDomElement &element);
     void loadDegrees(const QString &fileName);
     void loadStudents(const QString &fileName);
     void loadUvs(const QString &fileName);
-    void saveUvs(const QString &filePath);
+    void saveDegree(Degree *degree, QDomElement &element, QDomDocument &dom);
+    void saveDegrees();
+    void saveUvs();
 
     friend struct Handler;
     struct Handler
