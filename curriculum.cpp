@@ -4,7 +4,7 @@ Curriculum::Curriculum():
     editStudent_(false),
     selectedDegree_(0)
 {
-    student_ = new Student(); // a virer avec la connection
+    //student_ = new Student(); // a virer avec la connection
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
@@ -55,7 +55,12 @@ Curriculum::Curriculum():
     mainLayout->addWidget(semestersScrollArea_);
     mainLayout->addLayout(deleteUvLayout_);
 
-    generationView();
+    //generationView();
+}
+
+Curriculum::~Curriculum()
+{
+    saveQLineEdit();
 }
 
 void Curriculum::addUV()
@@ -63,26 +68,26 @@ void Curriculum::addUV()
     if (semester_->text().isEmpty() || code_->currentIndex() == 0 || grade_->currentIndex() == 0)
         return;
 
-    student_->addUV(code_->currentText(), semester_->text(), Uv::stringToGrade(grade_->currentText()));
+    UVManager::instance().student()->addUV(code_->currentText(), semester_->text(), Uv::stringToGrade(grade_->currentText()));
     updateStudent();
 
 }
 
 void Curriculum::addDegree()
 {
-    student_->addDegree(selectedDegree_);
+    UVManager::instance().student()->addDegree(selectedDegree_);
     updateStudent();
 }
 
 void Curriculum::deleteDegree()
 {
-    student_->deleteDegree(deleteDegree_->currentText());
+    UVManager::instance().student()->deleteDegree(deleteDegree_->currentText());
     updateStudent();
 }
 
 void Curriculum::deleteUV()
 {
-    student_->deleteUV(deleteUVCodeUV_->currentText(), deleteUVSemester_->currentText());
+    UVManager::instance().student()->deleteUV(deleteUVCodeUV_->currentText(), deleteUVSemester_->currentText());
     updateStudent();
 }
 
@@ -146,11 +151,13 @@ void Curriculum::updateUvs()
     deleteUVCodeUV_->clear();
     deleteUVCodeUV_->insertItem(0, "Choix de l'UV");
 
-    for(int i = 0; i < student_->semesters().size(); i++)
+    Student* student = UVManager::instance().student();
+
+    for(int i = 0; i < student->semesters().size(); i++)
     {
-        if (student_->semesters()[i]->title() == deleteUVSemester_->currentText())
+        if (student->semesters()[i]->title() == deleteUVSemester_->currentText())
         {
-            QMapIterator<QString, Grade> it(student_->semesters()[i]->uvs());
+            QMapIterator<QString, Grade> it(student->semesters()[i]->uvs());
             while (it.hasNext()) {
                 it.next();
                 deleteUVCodeUV_->insertItem(i + 1, it.key());
@@ -231,16 +238,21 @@ void Curriculum::loadSemesters(const Student* student) const
     semestersLayout_->insertStretch(-1);
 }
 
-void Curriculum::updateStudent()
+void Curriculum::saveQLineEdit()
 {
+    Student* student = UVManager::instance().student();
     // Sauvegarde des champs dans l'objet Student
-    student_->setEquivalenceCs(equivalenceCs_->text().toUInt());
-    student_->setEquivalenceTm(equivalenceTm_->text().toUInt());
-    student_->setEquivalenceTsh(equivalenceTsh_->text().toUInt());
-    student_->setEquivalenceSp(equivalenceSp_->text().toUInt());
-    student_->setFirstName(firstName_->text());
-    student_->setLastName(lastName_->text());
+    student->setEquivalenceCs(equivalenceCs_->text().toUInt());
+    student->setEquivalenceTm(equivalenceTm_->text().toUInt());
+    student->setEquivalenceTsh(equivalenceTsh_->text().toUInt());
+    student->setEquivalenceSp(equivalenceSp_->text().toUInt());
+    student->setFirstName(firstName_->text());
+    student->setLastName(lastName_->text());
+}
 
+void Curriculum::updateStudent()
+{    
+    saveQLineEdit();
     generationView();
 }
 
@@ -255,10 +267,12 @@ void Curriculum::generationView()
     Utilities::clearLayout(uvLayout_);
     Utilities::clearLayout(deleteUvLayout_);
 
+    Student* student = UVManager::instance().student();
+
     // Student
     QLabel* studentLabel = new QLabel("Etudiant (login) : ");
     studentLabel->setFixedWidth(80);
-    login_ = new QLineEdit();
+    login_ = new QLabel(student->login());
 
     studentLayout_->addWidget(studentLabel);
     studentLayout_->addWidget(login_);
@@ -267,10 +281,10 @@ void Curriculum::generationView()
     // Identity
     QLabel* identityLabel = new QLabel("Identité :");
     identityLabel->setFixedWidth(80);
-    firstName_ = new QLineEdit(student_->firstName());
+    firstName_ = new QLineEdit(student->firstName());
     firstName_->setReadOnly(!editStudent_);
     firstName_->setFixedWidth(100);
-    lastName_ = new QLineEdit(student_->lastName());
+    lastName_ = new QLineEdit(student->lastName());
     lastName_->setReadOnly(!editStudent_);
     lastName_->setFixedWidth(100);
     identityLayout_->addWidget(identityLabel);
@@ -285,10 +299,10 @@ void Curriculum::generationView()
     QLabel* equivalenceTmLabel = new QLabel("TM :");
     QLabel* equivalenceTshLabel = new QLabel("TSH :");
     QLabel* equivalenceSpLabel = new QLabel("SP :");
-    equivalenceCs_ = new QLineEdit(QString::number(student_->equivalenceCs()));
-    equivalenceTm_ = new QLineEdit(QString::number(student_->equivalenceTm()));
-    equivalenceTsh_ = new QLineEdit(QString::number(student_->equivalenceTsh()));
-    equivalenceSp_ = new QLineEdit(QString::number(student_->equivalenceSp()));
+    equivalenceCs_ = new QLineEdit(QString::number(student->equivalenceCs()));
+    equivalenceTm_ = new QLineEdit(QString::number(student->equivalenceTm()));
+    equivalenceTsh_ = new QLineEdit(QString::number(student->equivalenceTsh()));
+    equivalenceSp_ = new QLineEdit(QString::number(student->equivalenceSp()));
     equivalenceCs_->setFixedWidth(50);
     equivalenceTm_->setFixedWidth(50);
     equivalenceTsh_->setFixedWidth(50);
@@ -348,9 +362,9 @@ void Curriculum::generationView()
     else
         newDegreeLayout_->addStretch(-1);
 
-    for(int i = 0; i <student_->degrees().size(); i++)
+    for(int i = 0; i <student->degrees().size(); i++)
     {
-        const Degree* degree = student_->degrees()[i];
+        const Degree* degree = student->degrees()[i];
 
         QHBoxLayout* degreeLayout = new QHBoxLayout;
 
@@ -368,9 +382,9 @@ void Curriculum::generationView()
         deleteDegree_ = new QComboBox;
 
         deleteDegree_->insertItem(0, "Choix du cursus");
-        for(int i = 0; i < student_->degrees().size(); i++)
+        for(int i = 0; i < student->degrees().size(); i++)
         {
-            deleteDegree_->insertItem(i + 1, student_->degrees()[i]->title());
+            deleteDegree_->insertItem(i + 1, student->degrees()[i]->title());
         }
 
         QPushButton* deleteDegreeButton = new QPushButton("Supprimer le cursus");
@@ -431,9 +445,9 @@ void Curriculum::generationView()
         QObject::connect(deleteUVSemester_,SIGNAL(activated(QString)),this,SLOT(updateUvs()));
         deleteUVSemester_->insertItem(0, "Choix du semestre");
 
-        for(int i = 0; i < student_->semesters().size(); i++)
+        for(int i = 0; i < student->semesters().size(); i++)
         {
-            deleteUVSemester_->insertItem(i + 1, student_->semesters()[i]->title());
+            deleteUVSemester_->insertItem(i + 1, student->semesters()[i]->title());
         }
 
         QPushButton* deleteUvButton = new QPushButton("Supprimer l'UV");
@@ -446,5 +460,5 @@ void Curriculum::generationView()
         deleteUvLayout_->addWidget(deleteUvButton);
     }
 
-    loadSemesters(student_);
+    loadSemesters(student);
 }

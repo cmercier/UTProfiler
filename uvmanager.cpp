@@ -105,9 +105,9 @@ void UVManager::addQuotas(Degree *degree, QDomElement &element)
 
 void UVManager::addStudent(const QString &login)
 {
-    Student* s = new Student;
-    s->setLogin(login);
-    students_.push_back(s);
+    student_ = new Student;
+    student_->setLogin(login);
+    students_.push_back(student_);
 }
 
 void UVManager::addStudent(Student *student)

@@ -53,6 +53,7 @@ void MainWindow::createStackedWidget()
 
     QObject::connect(lw,SIGNAL(currentRowChanged(int)),this,SLOT(setTag(int)));
     QObject::connect(connection_,SIGNAL(connected()),expectations_,SLOT(updateExpComboBox()));
+    QObject::connect(connection_,SIGNAL(connected()),curriculum_,SLOT(generationView()));
 }
 
 void MainWindow::setTag(int index)

@@ -18,14 +18,16 @@ public slots:
     void deleteDegree();
     void deleteUV();
     void editStudent(bool edit);
+    void generationView();
     void selectDegree(const QString &title);
     void updateUvs();
 
 
 private:
-    void generationView();
+    ~Curriculum();
     void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);
     void loadSemesters(const Student *student) const;
+    void saveQLineEdit();
     void updateStudent();
 
     QComboBox* code_;
@@ -45,7 +47,7 @@ private:
     QComboBox* grade_;
     QHBoxLayout* identityLayout_;
     QLineEdit* lastName_;
-    QLineEdit* login_;
+    QLabel* login_;
     QHBoxLayout* newDegreeLayout_;
     const Degree* selectedDegree_;
     QLineEdit* semester_;
