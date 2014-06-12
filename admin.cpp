@@ -99,7 +99,7 @@ void Admin::createAddDegreePanel()
     QVBoxLayout* mainLayout = new QVBoxLayout;
     addDegreePanel_ = new QWidget;
     addDegreePanel_->setLayout(mainLayout);
-    int labelWidth = 60;
+    int labelWidth = 40;
 
     // Name
     QLabel* nameLabel = new QLabel("Nom : ");
@@ -111,6 +111,8 @@ void Admin::createAddDegreePanel()
     nameLayout->insertStretch(-1);
     mainLayout->addLayout(nameLayout);
 
+    QHBoxLayout* h1 = new QHBoxLayout;
+
     // Add uv
     QLabel* addDegreeLabel = new QLabel("Uvs :");
     addDegreeLabel->setFixedWidth(labelWidth);
@@ -121,11 +123,78 @@ void Admin::createAddDegreePanel()
     addDegree_uvs_layout_ = new QVBoxLayout;
     saw->setLayout(addDegree_uvs_layout_);
     addDegree_scrollArea_->setWidgetResizable(true);
-    addDegree_scrollArea_->setFixedWidth(150);
+    addDegree_scrollArea_->setFixedWidth(110);
     addDegree_scrollArea_->setWidget(saw);
     addDegreeLayout->addWidget(addDegree_scrollArea_);
-    addDegreeLayout->insertStretch(-1);
-    mainLayout->addLayout(addDegreeLayout);
+    //addDegreeLayout->insertStretch(-1);
+    h1->addLayout(addDegreeLayout);
+
+    // Add parent degree
+    QLabel* addParentDegreeLabel = new QLabel("Inclure \nle cursus dans :");
+    QHBoxLayout* addParentDegreeLayout = new QHBoxLayout;
+    addParentDegreeLayout->addWidget(addParentDegreeLabel);
+    addDegree_parentScrollArea_ = new QScrollArea;
+    QWidget* psaw = new QWidget;
+    addDegree_degrees_layout_ = new QVBoxLayout;
+    psaw->setLayout(addDegree_degrees_layout_);
+    addDegree_parentScrollArea_->setWidgetResizable(true);
+    addDegree_parentScrollArea_->setFixedWidth(250);
+    addDegree_parentScrollArea_->setWidget(psaw);
+    addParentDegreeLayout->addWidget(addDegree_parentScrollArea_);
+    //addParentDegreeLayout->insertStretch(-1);
+    h1->addLayout(addParentDegreeLayout);
+    //h1->insertStretch(-1);
+
+    // Add criterias
+    QGroupBox* addCriteriaBox = new QGroupBox("Critères");
+    QVBoxLayout* v1 = new QVBoxLayout;
+    addCriteriaBox->setLayout(v1);
+        // CS
+    QLabel* csCriteria = new QLabel("CS :");
+    csCriteria->setFixedWidth(labelWidth);
+    addDegree_criteria_cs_ = new QSpinBox;
+    addDegree_criteria_cs_ ->setMinimum(0);
+    addDegree_criteria_cs_ ->setValue(0);
+    QHBoxLayout* h2 = new QHBoxLayout;
+    h2->addWidget(csCriteria);
+    h2->addWidget(addDegree_criteria_cs_ );
+    v1->addLayout(h2);
+        // TM
+    QLabel* tmCriteria = new QLabel("TM :");
+    tmCriteria->setFixedWidth(labelWidth);
+    addDegree_criteria_tm_ = new QSpinBox;
+    addDegree_criteria_tm_ ->setMinimum(0);
+    addDegree_criteria_tm_ ->setValue(0);
+    QHBoxLayout* h3 = new QHBoxLayout;
+    h3->addWidget(tmCriteria);
+    h3->addWidget(addDegree_criteria_tm_ );
+    v1->addLayout(h3);
+        // TSH
+    QLabel* tshCriteria = new QLabel("TSH :");
+    tshCriteria->setFixedWidth(labelWidth);
+    addDegree_criteria_tsh_ = new QSpinBox;
+    addDegree_criteria_tsh_ ->setMinimum(0);
+    addDegree_criteria_tsh_ ->setValue(0);
+    QHBoxLayout* h4 = new QHBoxLayout;
+    h4->addWidget(tshCriteria);
+    h4->addWidget(addDegree_criteria_tsh_ );
+    v1->addLayout(h4);
+        // SP
+    QLabel* spCriteria = new QLabel("SP :");
+    spCriteria->setFixedWidth(labelWidth);
+    addDegree_criteria_sp_ = new QSpinBox;
+    addDegree_criteria_sp_ ->setMinimum(0);
+    addDegree_criteria_sp_ ->setValue(0);
+    QHBoxLayout* h5 = new QHBoxLayout;
+    h5->addWidget(spCriteria);
+    h5->addWidget(addDegree_criteria_sp_ );
+    v1->addLayout(h5);
+
+    v1->insertStretch(-1);
+    h1->addWidget(addCriteriaBox);
+    h1->insertStretch(-1);
+
+    mainLayout->addLayout(h1);
 }
 
 void Admin::createAddUvPanel()
@@ -313,6 +382,11 @@ void Admin::editUv()
 void Admin::editUv(QString code)
 {
     editUv_uv_ = UVManager::instance().uvFromCode(code);
+    if(!editUv_uv_)
+    {
+        showEditUvPanel(false);
+        return;
+    }
 
     editUv_category_->setCurrentText(Uv::categoryToString(editUv_uv_->category()));
     editUv_code_->setText(editUv_uv_->code());
@@ -370,4 +444,15 @@ void Admin::updateUvLists()
     editUv_comboBox_->setCurrentIndex(0);
     removeUv_comboBox_->insertItem(0,"Selectionnez une Uv...");
     removeUv_comboBox_->setCurrentIndex(0);
+
+    Utilities::clearLayout(addDegree_degrees_layout_);
+    const QList<Degree*> &degrees = UVManager::instance().degrees();
+    for(int i = 0; i < degrees.size(); i++)
+    {
+        QString title = degrees.at(i)->title();
+        QCheckBox* degree = new QCheckBox(title);
+        degree->setChecked(false);
+        addDegree_degrees_layout_->addWidget(degree);
+    }
+    addDegree_degrees_layout_->insertStretch(-1);
 }

@@ -5,6 +5,7 @@ UVManager::Handler UVManager::handler_=Handler();
 
 UVManager::UVManager():
     degreesFilePath_("formations.xml"),
+    student_(0),
     studentsFilePath_("etudiants.xml"),
     uvsFilePath_("UV_UTC.xml")
 {
@@ -101,12 +102,32 @@ void UVManager::addQuotas(Degree *degree, QDomElement &element)
     }
 }
 
+void UVManager::addStudent(const QString &login)
+{
+    Student* s = new Student;
+    s->setLogin(login);
+    students_.push_back(s);
+}
+
 void UVManager::addStudent(Student *student)
 {
     if(!student)
         return;
 
     students_.push_back(student);
+}
+
+bool UVManager::connect(const QString &login)
+{
+    for(int i = 0; i < students_.size(); i++)
+    {
+        if(students_.at(i)->login() == login)
+        {
+            student_ = students_.at(i);
+            return true;
+        }
+    }
+    return false;
 }
 
 QList<const Degree*> UVManager::degreesWithParent(const QString &parentTitle)
@@ -175,11 +196,11 @@ void UVManager::loadDegrees(const QString &fileName)
     file.close();
 }
 
-void UVManager::loadStudents(const QString &fileName)
+void UVManager::loadStudents(const QString &studentsFileName)
 {
-    QFile file(fileName);
+    QFile file(studentsFileName);
     if(!file.open(QIODevice::ReadOnly))
-        throw UTProfilerException("Failed to open " + fileName + " in UVManager::loadStudents.");
+        throw UTProfilerException("Failed to open " + studentsFileName + " in UVManager::loadStudents.");
 
     QDomDocument dom;
     dom.setContent(&file);
@@ -199,6 +220,15 @@ void UVManager::loadStudents(const QString &fileName)
         student->setEquivalenceTsh(studentElement.firstChildElement("equivalence").firstChildElement("tsh").text().toUInt());
         student->setEquivalenceSp(studentElement.firstChildElement("equivalence").firstChildElement("sp").text().toUInt());
         addStudent(student);
+
+        for(QDomElement expElem = studentElement.firstChildElement("prevision");!expElem.isNull();expElem = expElem.nextSiblingElement("prevision"))
+        {
+            Expectation* exp = new Expectation;
+
+            exp->setName(expElem.firstChildElement("nom").text());
+
+            student->addExp(exp);
+        }
     }
 
     file.close();

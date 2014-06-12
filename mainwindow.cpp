@@ -12,25 +12,35 @@ void MainWindow::createStackedWidget()
     QListWidget* lw = new QListWidget(this);
     lw->setFixedWidth(100);
     lw->setSelectionMode(QAbstractItemView::SingleSelection);
-    QListWidgetItem* catalogItem = new QListWidgetItem;
-    catalogItem->setText("Catalogue Uvs");
-    lw->insertItem(0,catalogItem);
+    QListWidgetItem* connectionItem = new QListWidgetItem;
+    connectionItem->setText("Connexion");
+    lw->insertItem(0,connectionItem);
     QListWidgetItem* curriculumItem = new QListWidgetItem;
     curriculumItem->setText("Mon parcours");
     lw->insertItem(1,curriculumItem);
+    QListWidgetItem* expectationsItem = new QListWidgetItem;
+    expectationsItem->setText("Prévisions");
+    lw->insertItem(2,expectationsItem);
+    QListWidgetItem* catalogItem = new QListWidgetItem;
+    catalogItem->setText("Catalogue Uvs");
+    lw->insertItem(3,catalogItem);
     QListWidgetItem* adminItem = new QListWidgetItem;
-    adminItem->setText("Admin");
-    lw->insertItem(2,adminItem);
+    adminItem->setText("Gestion Uvs");
+    lw->insertItem(4,adminItem);
 
     // Create the pages
     admin_ = new Admin;
     catalog_ = new Catalog;
     curriculum_ = new Curriculum;
+    expectations_ = new Expectations;
+    connection_ = new Connection;
 
     // Link the pages with the vertical navigation bar
     navigationStackedWidget_ = new QStackedWidget;
-    navigationStackedWidget_->addWidget(catalog_);
+    navigationStackedWidget_->addWidget(connection_);
     navigationStackedWidget_->addWidget(curriculum_);
+    navigationStackedWidget_->addWidget(expectations_);
+    navigationStackedWidget_->addWidget(catalog_);
     navigationStackedWidget_->addWidget(admin_);
 
     QHBoxLayout* mainLayout = new QHBoxLayout;
@@ -42,6 +52,7 @@ void MainWindow::createStackedWidget()
     setCentralWidget(cw);
 
     QObject::connect(lw,SIGNAL(currentRowChanged(int)),this,SLOT(setTag(int)));
+    QObject::connect(connection_,SIGNAL(connected()),expectations_,SLOT(updateExpComboBox()));
 }
 
 void MainWindow::setTag(int index)
