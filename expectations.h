@@ -17,10 +17,12 @@ public slots:
     void updateExpPanel();
 
 private:
+    void createExpPanel();
 
     QVBoxLayout* expLayout_;
     QComboBox* expSelect_;
     QScrollArea* expScrollArea_;
+    QLineEdit* name_;
 };
 
 #endif // EXPECTATIONS_H

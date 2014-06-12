@@ -23,9 +23,46 @@ Expectations::Expectations()
     expScrollArea_->setWidget(w);
     expLayout_ = new QVBoxLayout;
     w->setLayout(expLayout_);
+    mainLayout->addWidget(expScrollArea_);
 
     mainLayout->insertStretch(-1);
-    updateExpComboBox();
+
+    createExpPanel();
+}
+
+void Expectations::createExpPanel()
+{
+    QLabel* nameLabel = new QLabel("Nom :");
+    name_ = new QLineEdit;
+    QHBoxLayout* h1 = new QHBoxLayout;
+    h1->addWidget(nameLabel);
+    h1->addWidget(name_);
+    h1->insertStretch(-1);
+    expLayout_->addLayout(h1);
+
+    // Add semester
+    QGroupBox* addSemesterBox = new QGroupBox;
+    QVBoxLayout* v1 = new QVBoxLayout;
+    addSemesterBox->setLayout(v1);
+        // semester
+    QLabel* seasonLabel = new QLabel("Semestre :");
+    QComboBox* seasonBox = new QComboBox;
+    seasonBox->addItem("Printemps");
+    seasonBox->addItem("Automne");
+    QHBoxLayout* h2 = new QHBoxLayout;
+    h2->addWidget(seasonLabel);
+    h2->addWidget(seasonBox);
+        // date
+    QLabel* yearLabel = new QLabel("Année :");
+    QSpinBox* yearBox = new QSpinBox;
+    yearBox->setValue(14);
+    h2->addWidget(yearLabel);
+    h2->addWidget(yearBox);
+    h2->insertStretch(-1);
+    v1->addLayout(h2);
+
+    expLayout_->addWidget(addSemesterBox);
+    expLayout_->insertStretch(-1);
 }
 
 void Expectations::updateExpComboBox()
@@ -34,9 +71,7 @@ void Expectations::updateExpComboBox()
 
     Student* student = UVManager::instance().student();
     if(!student)
-    {qDebug() << "nop";
         return;
-    }
 
     const QList<Expectation*> &exp = student->exp();
     for(int i = 0; i < exp.size(); i++)
@@ -50,5 +85,4 @@ void Expectations::updateExpComboBox()
 
 void Expectations::updateExpPanel()
 {
-
 }
