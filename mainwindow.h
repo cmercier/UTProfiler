@@ -4,7 +4,9 @@
 #include "catalog.h"
 #include "curriculum.h"
 #include "sessionmanager.h"
+#include "expectations.h"
 #include "admin.h"
+#include "connection.h"
 
 class MainWindow: public QMainWindow
 {
@@ -21,7 +23,9 @@ private:
 
     Admin* admin_;
     Catalog* catalog_;
+    Connection* connection_;
     Curriculum* curriculum_;
+    Expectations* expectations_;
     QStackedWidget* navigationStackedWidget_;
 
 };

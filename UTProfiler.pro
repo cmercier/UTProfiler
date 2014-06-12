@@ -12,7 +12,10 @@ HEADERS += \
     utilities.h \
     sessionmanager.h \
     curriculum.h \
-    admin.h
+    admin.h \
+    expectations.h \
+    expectation.h \
+    connection.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -26,4 +29,7 @@ SOURCES += \
     utilities.cpp \
     sessionmanager.cpp \
     curriculum.cpp \
-    admin.cpp
+    admin.cpp \
+    expectations.cpp \
+    expectation.cpp \
+    connection.cpp

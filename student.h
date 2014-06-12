@@ -5,6 +5,7 @@
 #include <QString>
 #include "uv.h"
 #include "degree.h"
+#include "expectation.h"
 
 class Semester
 {
@@ -32,6 +33,7 @@ class Student
 public:
     Student();
     void addDegree(const Degree *degree);
+    void addExp(Expectation* exp);
     void addSemester(Semester *semester);
     void addUV(const QString codeUV, const QString semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}
@@ -41,6 +43,7 @@ public:
     unsigned int equivalenceTm() const {return equivalenceTm_;}
     unsigned int equivalenceTsh() const {return equivalenceTsh_;}
     unsigned int equivalenceSp() const {return equivalenceSp_;}
+    const QList<Expectation*> &exp() const {return exp_;}
     const QString & firstName() const {return firstName_;}
     const QString & lastName() const {return lastName_;}
     const QString & login() const {return login_;}
@@ -60,6 +63,7 @@ private:
     friend class SessionManager;
 
     QList<const Degree*> degrees_;
+    QList<Expectation*> exp_;
     unsigned int equivalenceCs_;
     unsigned int equivalenceTm_;
     unsigned int equivalenceTsh_;

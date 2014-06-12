@@ -11,13 +11,16 @@ class UVManager
 {
 public:
     void addUv(Uv* uv);
+    void addStudent(const QString &login);
     void addStudent(Student *student);
+    bool connect(const QString &login);
     const QList<Degree*> & degrees() const {return degrees_;}
     const Degree * degreeWithTitle(const QString &title);
     QList<const Degree*> degreesWithParent(const QString &parentTitle);
     static UVManager& instance();
     void load();
     void removeUv(const QString &code);
+    Student* student() {return student_;}
     const QList<Student*> students() const {return students_;}
     const Uv* uvFromCode(const QString &code) const;
     QList<const Uv*> uvs() const;
@@ -35,7 +38,7 @@ private:
     void addUvs(Semester *semester, QDomElement &element);
     void addQuotas(Degree *degree, QDomElement &element);
     void loadDegrees(const QString &fileName);
-    void loadStudents(const QString &fileName);
+    void loadStudents(const QString &studentsFileName);
     void loadUvs(const QString &fileName);
     void saveDegree(Degree *degree, QDomElement &element, QDomDocument &dom);
     void saveDegrees();
@@ -59,6 +62,7 @@ private:
     static UVManager* instance_;
     QList<Degree*> degrees_;
     QString degreesFilePath_;
+    Student* student_;
     QList<Student*> students_;
     QString studentsFilePath_;
     QList<Uv*> uvs_;

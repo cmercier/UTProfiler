@@ -27,10 +27,16 @@ private:
     void createEditUvPanel();
     void updateUvLists();
 
+    QSpinBox* addDegree_criteria_cs_;
+    QSpinBox* addDegree_criteria_tm_;
+    QSpinBox* addDegree_criteria_tsh_;
+    QSpinBox* addDegree_criteria_sp_;
+    QVBoxLayout* addDegree_degrees_layout_;
     QLineEdit* addDegree_name_;
     QComboBox* addDegree_uvs_;
     QVBoxLayout* addDegree_uvs_layout_;
     QWidget* addDegreePanel_;
+    QScrollArea* addDegree_parentScrollArea_;
     QScrollArea* addDegree_scrollArea_;
     QComboBox* addUv_category_;
     QLineEdit* addUv_code_;

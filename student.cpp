@@ -17,6 +17,11 @@ void Student::addDegree(const Degree *degree)
         degrees_.push_back(degree);
 }
 
+void Student::addExp(Expectation *exp)
+{
+    exp_.push_back(exp);
+}
+
 void Student::addSemester(Semester *semester)
 {
     if(!semesters_.contains(semester))
