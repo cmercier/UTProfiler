@@ -39,6 +39,7 @@ private:
     void loadUvs(const QString &fileName);
     void saveDegree(Degree *degree, QDomElement &element, QDomDocument &dom);
     void saveDegrees();
+    void saveStudents();
     void saveUvs();
 
     friend struct Handler;

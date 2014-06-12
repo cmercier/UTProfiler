@@ -30,6 +30,7 @@ private:
 class Student
 {
 public:
+    Student();
     void addDegree(const Degree *degree);
     void addSemester(Semester *semester);
     void addUV(const QString codeUV, const QString semester, Grade grade);
@@ -52,8 +53,7 @@ public:
     void setLogin(const QString &login) {login_ = login;}
     const QList<Semester*>& semesters() const {return semesters_;}
 
-private:
-    Student();
+private:   
     Student(const Student &student);
     Student& operator=(const Student &student);
     friend class UVManager;

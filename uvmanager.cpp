@@ -14,6 +14,7 @@ UVManager::~UVManager()
 {
     saveDegrees();
     saveUvs();
+    saveStudents();
 }
 
 void UVManager::addDegree(QDomElement &element, Degree *parent)
@@ -295,6 +296,106 @@ void UVManager::saveDegrees()
     for(int i = 0; i < degrees_.size(); i++)
         if(degrees_.at(i)->depth() == 0)
             saveDegree(degrees_.at(i),degrees,dom);
+
+    file.write(dom.toByteArray());
+    file.close();
+}
+
+void UVManager::saveStudents()
+{
+    QFile file(studentsFilePath_);
+    if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
+    {
+        //throw UTProfilerException("Failed to open " + fileName + " in UVManager::save.");
+        qDebug() << "Failed to open " << uvsFilePath_ << " in save";
+        return;
+    }
+
+    QDomDocument dom;
+    dom.setContent(&file);
+
+    QDomElement students = dom.createElement("etudiants");
+    dom.appendChild(students);
+
+    // Students
+    for(int i = 0; i < students_.size(); i++)
+    {
+        Student* student = students_.at(i);
+
+        QDomElement studentElement = dom.createElement("etudiant");
+
+        QDomElement login = dom.createElement("login");
+        login.appendChild(dom.createTextNode(student->login()));
+        studentElement.appendChild(login);
+
+        QDomElement prenom = dom.createElement("prenom");
+        prenom.appendChild(dom.createTextNode(student->firstName()));
+        studentElement.appendChild(prenom);
+
+        QDomElement nom = dom.createElement("nom");
+        nom.appendChild(dom.createTextNode(student->lastName()));
+        studentElement.appendChild(nom);
+
+        // Degrees
+        for (int i = 0; i < student->degrees().size(); i++)
+        {
+            QDomElement degree = dom.createElement("cursus");
+            degree.appendChild(dom.createTextNode(student->degrees()[i]->title()));
+            studentElement.appendChild(degree);
+        }
+
+        // Semesters
+        for (int i = 0; i < student->semesters().size(); i++)
+        {
+            QDomElement semester = dom.createElement("semestre");
+
+            QDomElement title = dom.createElement("titre");
+            title.appendChild(dom.createTextNode(student->semesters()[i]->title()));
+            semester.appendChild(title);
+
+            // Uvs
+            QMapIterator<QString, Grade> it(student->semesters()[i]->uvs());
+            while (it.hasNext()) {
+                it.next();
+
+                QDomElement uv = dom.createElement("uv");
+
+                QDomElement code = dom.createElement("code");
+                code.appendChild(dom.createTextNode(it.key()));
+                uv.appendChild(code);
+
+                QDomElement grade = dom.createElement("note");
+                grade.appendChild(dom.createTextNode(Uv::gradeToString(it.value())));
+                uv.appendChild(grade);
+
+                semester.appendChild(uv);
+            }
+        }
+
+        // Equivalences
+        QDomElement equivalences = dom.createElement("equivalence");
+
+        QDomElement equivalenceCs = dom.createElement("cs");
+        equivalenceCs.appendChild(dom.createTextNode(QString::number(student->equivalenceCs())));
+        equivalences.appendChild(equivalenceCs);
+
+        QDomElement equivalenceTm = dom.createElement("tm");
+        equivalenceTm.appendChild(dom.createTextNode(QString::number(student->equivalenceTm())));
+        equivalences.appendChild(equivalenceTm);
+
+        QDomElement equivalenceTsh = dom.createElement("tsh");
+        equivalenceTsh.appendChild(dom.createTextNode(QString::number(student->equivalenceTsh())));
+        equivalences.appendChild(equivalenceTsh);
+
+        QDomElement equivalenceSp = dom.createElement("sp");
+        equivalenceSp.appendChild(dom.createTextNode(QString::number(student->equivalenceSp())));
+        equivalences.appendChild(equivalenceSp);
+
+        studentElement.appendChild(equivalences);
+
+
+        students.appendChild(studentElement);
+    }
 
     file.write(dom.toByteArray());
     file.close();

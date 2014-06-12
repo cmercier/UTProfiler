@@ -4,6 +4,8 @@ Curriculum::Curriculum():
     editStudent_(false),
     selectedDegree_(0)
 {
+    student_ = new Student(); // a virer avec la connection
+
     QVBoxLayout* mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
 
@@ -53,7 +55,7 @@ Curriculum::Curriculum():
     mainLayout->addWidget(semestersScrollArea_);
     mainLayout->addLayout(deleteUvLayout_);
 
-    updateStudent();
+    generationView();
 }
 
 void Curriculum::addUV()
@@ -231,9 +233,19 @@ void Curriculum::loadSemesters(const Student* student) const
 
 void Curriculum::updateStudent()
 {
-    // pour tester
-    student_ = UVManager::instance().students()[0];
+    // Sauvegarde des champs dans l'objet Student
+    student_->setEquivalenceCs(equivalenceCs_->text().toUInt());
+    student_->setEquivalenceTm(equivalenceTm_->text().toUInt());
+    student_->setEquivalenceTsh(equivalenceTsh_->text().toUInt());
+    student_->setEquivalenceSp(equivalenceSp_->text().toUInt());
+    student_->setFirstName(firstName_->text());
+    student_->setLastName(lastName_->text());
 
+    generationView();
+}
+
+void Curriculum::generationView()
+{
     // Refresh
     Utilities::clearLayout(semestersLayout_);
     Utilities::clearLayout(studentLayout_);
@@ -246,7 +258,7 @@ void Curriculum::updateStudent()
     // Student
     QLabel* studentLabel = new QLabel("Etudiant (login) : ");
     studentLabel->setFixedWidth(80);
-    QLabel* login_ = new QLabel(student_->login());
+    login_ = new QLineEdit();
 
     studentLayout_->addWidget(studentLabel);
     studentLayout_->addWidget(login_);
@@ -284,7 +296,7 @@ void Curriculum::updateStudent()
     equivalenceCs_->setReadOnly(!editStudent_);
     equivalenceTm_->setReadOnly(!editStudent_);
     equivalenceTsh_->setReadOnly(!editStudent_);
-    equivalenceSp_->setReadOnly(!editStudent_);    
+    equivalenceSp_->setReadOnly(!editStudent_);
     equivalence_->addWidget(equivalenceLabel);
     equivalence_->addWidget(equivalenceCsLabel);
     equivalence_->addWidget(equivalenceCs_);
@@ -297,7 +309,7 @@ void Curriculum::updateStudent()
     equivalence_->insertStretch(-1);
 
 
-    // Degrees    
+    // Degrees
     QLabel* degreeLabel = new QLabel("Cursus :");
     degreeLabel->setFixedWidth(80);
     newDegreeLayout_ = new QHBoxLayout;
