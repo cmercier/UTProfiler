@@ -17,6 +17,7 @@ public:
 
 public slots:
     void setTag(int index);
+    void afterConnection();
 
 private:
     void createStackedWidget();

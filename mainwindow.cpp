@@ -51,12 +51,22 @@ void MainWindow::createStackedWidget()
     cw->setLayout(mainLayout);
     setCentralWidget(cw);
 
+    curriculum_->setEnabled(false);
+    expectations_->setEnabled(false);
+
     QObject::connect(lw,SIGNAL(currentRowChanged(int)),this,SLOT(setTag(int)));
     QObject::connect(connection_,SIGNAL(connected()),expectations_,SLOT(updateExpComboBox()));
     QObject::connect(connection_,SIGNAL(connected()),curriculum_,SLOT(generationView()));
+    QObject::connect(connection_,SIGNAL(connected()),this,SLOT(afterConnection()));
 }
 
 void MainWindow::setTag(int index)
 {
     navigationStackedWidget_->setCurrentIndex(index);
+}
+
+void MainWindow::afterConnection()
+{
+    curriculum_->setEnabled(true);
+    expectations_->setEnabled(true);
 }

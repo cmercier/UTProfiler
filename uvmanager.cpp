@@ -400,6 +400,8 @@ void UVManager::saveStudents()
 
                 semester.appendChild(uv);
             }
+
+            studentElement.appendChild(semester);
         }
 
         // Equivalences
