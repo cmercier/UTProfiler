@@ -24,7 +24,6 @@ public slots:
 
 
 private:
-    ~Curriculum();
     void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);
     void loadSemesters(const Student *student) const;
     void saveQLineEdit();

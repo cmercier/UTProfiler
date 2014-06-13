@@ -12,31 +12,34 @@ public:
     Admin();
 
 public slots:
+    void addDegree();
     void addUv();
     void editUv();
     void editUv(QString);
+    void removeDegree();
     void removeUv();
     void showAddDegreePanel(bool);
     void showAddUvPanel(bool);
     void showEditUvPanel(bool);
+    void showRemoveDegreeButton(QString);
     void showRemoveUvButton(QString);
 
 private:
     void createAddDegreePanel();
     void createAddUvPanel();
     void createEditUvPanel();
-    void updateUvLists();
+    void updateForms();
 
     QSpinBox* addDegree_criteria_cs_;
     QSpinBox* addDegree_criteria_tm_;
     QSpinBox* addDegree_criteria_tsh_;
     QSpinBox* addDegree_criteria_sp_;
-    QVBoxLayout* addDegree_degrees_layout_;
     QLineEdit* addDegree_name_;
+    QComboBox* addDegree_parent_;
     QComboBox* addDegree_uvs_;
     QVBoxLayout* addDegree_uvs_layout_;
+    QList<QCheckBox*> addDegree_uvsBoxes_;
     QWidget* addDegreePanel_;
-    QScrollArea* addDegree_parentScrollArea_;
     QScrollArea* addDegree_scrollArea_;
     QComboBox* addUv_category_;
     QLineEdit* addUv_code_;
@@ -54,6 +57,8 @@ private:
     const Uv* editUv_uv_;
     QCheckBox* editUv_spring_;
     QLineEdit* editUv_title_;
+    QComboBox* removeDegree_comboBox_;
+    QPushButton* removeDegree_remove_;
     QComboBox* removeUv_comboBox_;
     QPushButton* removeUv_remove_;
 };

@@ -58,11 +58,6 @@ Curriculum::Curriculum():
     //generationView();
 }
 
-Curriculum::~Curriculum()
-{
-    saveQLineEdit();
-}
-
 void Curriculum::addUV()
 {
     if (semester_->text().isEmpty() || code_->currentIndex() == 0 || grade_->currentIndex() == 0)

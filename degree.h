@@ -8,10 +8,15 @@
 class Degree
 {
 public:
+    Degree(Degree *parent = 0);
+    Degree(const Degree &degree);
+    Degree& operator=(const Degree &degree);
+
     void addUv(const Uv *uv);
     const QList<Degree*> &children() const {return children_;}
     int depth() const;
     const Degree* parent() const {return parent_;}
+    void removeChildren();
     int quota(Category category) const;
     const QMap<Category,int> & quotas() const {return quotas_;}
     void setParent(Degree *parent);
@@ -23,10 +28,6 @@ public:
     const QList<const Uv*>& uvs() const {return uvs_;}
 
 private:
-    Degree(Degree *parent = 0);
-    Degree(const Degree &degree);
-    Degree& operator=(const Degree &degree);
-    friend class UVManager;
     void addChild(Degree *child);
 
     QList<Degree*> children_;
