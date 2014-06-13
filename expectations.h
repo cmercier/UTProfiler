@@ -22,7 +22,9 @@ public slots:
 
 private:
     void createExpPanel();
+    void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);
 
+    Expectation* exp_;
     QHBoxLayout* degreeLayout_;
     QComboBox* degreesBox_;
     QVBoxLayout* expLayout_;

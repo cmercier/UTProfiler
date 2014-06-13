@@ -220,13 +220,34 @@ void UVManager::loadStudents(const QString &studentsFileName)
         student->setEquivalenceSp(studentElement.firstChildElement("equivalence").firstChildElement("sp").text().toUInt());
         addStudent(student);
 
-        for(QDomElement expElem = studentElement.firstChildElement("prevision");!expElem.isNull();expElem = expElem.nextSiblingElement("prevision"))
+        for(QDomElement expElem = studentElement.firstChildElement("prevision"); !expElem.isNull(); expElem = expElem.nextSiblingElement("prevision"))
         {
             Expectation* exp = new Expectation;
 
             exp->setName(expElem.firstChildElement("nom").text());
 
             student->addExp(exp);
+
+            for(QDomElement degreeElement = expElem.firstChildElement("cursus"); !degreeElement.isNull(); degreeElement = degreeElement.nextSiblingElement("cursus"))
+            {
+                const Degree *degree = degreeWithTitle(degreeElement.text());
+                if(degree)
+                    exp->addDegree(degree);
+            }
+
+            for(QDomElement uvElement = expElem.firstChildElement("uvRejete"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uvRejete"))
+            {
+                const Uv *uv = uvFromCode(uvElement.text());
+                if(uv)
+                    exp->addRejectedUv(uv);
+            }
+
+            for(QDomElement uvElement = expElem.firstChildElement("uvRequise"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uvRequise"))
+            {
+                const Uv *uv = uvFromCode(uvElement.text());
+                if(uv)
+                    exp->addRequiredUv(uv);
+            }
         }
     }
 

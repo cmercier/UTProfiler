@@ -11,8 +11,8 @@ public:
     Expectation();
 
     void addDegree(const Degree *degree);
-    void addRejectedUv(Uv* uv);
-    void addRequiredUv(Uv* uv);
+    void addRejectedUv(const Uv* uv);
+    void addRequiredUv(const Uv* uv);
     void addSemester(Semester *semester);
     void addUV(const QString codeUV, const QString semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}

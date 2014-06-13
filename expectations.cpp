@@ -1,4 +1,6 @@
 #include "expectations.h"
+#include <QDebug>
+#include "utilities.h"
 
 Expectations::Expectations()
 {
@@ -6,10 +8,13 @@ Expectations::Expectations()
     setLayout(mainLayout);
 
     // Select or create expectations
+    exp_ = new Expectation;
     QLabel* expSelectLabel = new QLabel("Mes prévisions :");
     expSelect_ = new QComboBox;
     expSelect_->setInsertPolicy(QComboBox::InsertAlphabetically);
     expSelect_->setFixedWidth(150);
+    //QObject::connect(expSelect_,SIGNAL(activated(QString)),this,SLOT());
+
     QHBoxLayout* h1 = new QHBoxLayout;
     h1->addWidget(expSelectLabel);
     h1->addWidget(expSelect_);
@@ -26,8 +31,6 @@ Expectations::Expectations()
     mainLayout->addWidget(expScrollArea_);
 
     mainLayout->insertStretch(-1);
-
-    createExpPanel();
 }
 
 void Expectations::addWantedDegree()
@@ -37,6 +40,8 @@ void Expectations::addWantedDegree()
 
 void Expectations::createExpPanel()
 {
+    Utilities::clearLayout(expLayout_);
+
     // Name
     QLabel* nameLabel = new QLabel("Nom :");
     name_ = new QLineEdit;
@@ -98,8 +103,21 @@ void Expectations::createExpPanel()
     QVBoxLayout* v1 = new QVBoxLayout;
     v1->addLayout(degreeLayout_);
     v1->addLayout(h5);
-    v1->insertStretch(-1);
     wantedDegrees->setLayout(v1);
+    /*for(int i = 0; i < currentExp_->degrees().size(); i++)
+    {
+        const Degree* degree = currentExp_->degrees()[i];
+
+        QHBoxLayout* degreesLayout = new QHBoxLayout;
+
+        getParentDegree(degreesLayout, degree);
+
+        degreesLayout->insertStretch(-1);
+
+        v1->addLayout(degreesLayout);
+
+    }*/
+    v1->insertStretch(-1);
 
     QHBoxLayout* h4 = new QHBoxLayout;
     h4->addLayout(h2);
@@ -138,6 +156,23 @@ void Expectations::createExpPanel()
     updateUnwantedUvs();
 }
 
+void Expectations::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree)
+{
+    QLabel* degreeTitleLabel;
+
+    if(degree->parent() != 0)
+    {
+        degreeTitleLabel = new QLabel("->  " + degree->title());
+        getParentDegree(degreeLayout, degree->parent());
+    }
+    else
+    {
+        degreeTitleLabel = new QLabel(degree->title());
+    }
+
+    degreeLayout->addWidget(degreeTitleLabel);
+}
+
 void Expectations::selectDegree(const QString &title)
 {
     selectedDegree_ = UVManager::instance().degreeWithTitle(title);
@@ -172,8 +207,6 @@ void Expectations::selectDegree(const QString &title)
 
 void Expectations::updateExpComboBox()
 {
-    expSelect_->clear();
-
     Student* student = UVManager::instance().student();
     if(!student)
         return;
@@ -186,6 +219,8 @@ void Expectations::updateExpComboBox()
 
     expSelect_->insertItem(0,"Nouvelle prévision");
     expSelect_->setCurrentIndex(0);
+
+    createExpPanel();
 }
 
 void Expectations::updateExpPanel()

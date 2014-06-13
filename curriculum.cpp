@@ -177,9 +177,6 @@ void Curriculum::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree
     }
 
     degreeLayout->addWidget(degreeTitleLabel);
-
-
-
 }
 
 void Curriculum::loadSemesters(const Student* student) const

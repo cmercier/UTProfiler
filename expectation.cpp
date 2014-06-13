@@ -1,6 +1,7 @@
 #include "expectation.h"
 
-Expectation::Expectation()
+Expectation::Expectation():
+    name_("")
 {
 }
 
@@ -10,13 +11,13 @@ void Expectation::addDegree(const Degree *degree)
         degrees_.push_back(degree);
 }
 
-void Expectation::addRejectedUv(Uv *uv)
+void Expectation::addRejectedUv(const Uv *uv)
 {
     if(!rejectedUvs_.contains(uv))
         rejectedUvs_.push_back(uv);
 }
 
-void Expectation::addRequiredUv(Uv *uv)
+void Expectation::addRequiredUv(const Uv *uv)
 {
     if(!requiredUvs_.contains(uv))
         requiredUvs_.push_back(uv);
