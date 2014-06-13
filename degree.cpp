@@ -34,7 +34,7 @@ void Degree::removeChildren()
     }
 }
 
-int Degree::quota(Category category) const
+int Degree::quota(QString category) const
 {
     if(quotas_.contains(category))
         return quotas_[category];
@@ -49,7 +49,7 @@ void Degree::setParent(Degree *parent)
         parent->addChild(this);
 }
 
-void Degree::setQuota(Category category, int quota)
+void Degree::setQuota(QString category, int quota)
 {
     if(quota <= 0)
     {

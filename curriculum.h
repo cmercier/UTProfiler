@@ -19,15 +19,14 @@ public slots:
     void deleteUV();
     void editStudent(bool edit);
     void generationView();
+    void saveQLineEdit();
     void selectDegree(const QString &title);
+    void updateStudent();
     void updateUvs();
-
 
 private:
     void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);
     void loadSemesters(const Student *student) const;
-    void saveQLineEdit();
-    void updateStudent();
 
     QComboBox* code_;
     QComboBox* degree_;
@@ -38,10 +37,7 @@ private:
     QHBoxLayout* deleteUvLayout_;
     bool editStudent_;
     QHBoxLayout* equivalence_;
-    QLineEdit* equivalenceCs_;
-    QLineEdit* equivalenceTm_;
-    QLineEdit* equivalenceTsh_;
-    QLineEdit* equivalenceSp_;
+    QList<QLineEdit*> equivalences_;
     QLineEdit* firstName_;
     QComboBox* grade_;
     QHBoxLayout* identityLayout_;

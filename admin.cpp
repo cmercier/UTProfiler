@@ -105,10 +105,10 @@ void Admin::addDegree()
        degree->setParent(UVManager::instance().degreeWithTitle(addDegree_parent_->currentText()));
    }
 
-   degree->setQuota(CS,addDegree_criteria_cs_->value());
-   degree->setQuota(TM,addDegree_criteria_tm_->value());
-   degree->setQuota(TSH,addDegree_criteria_tsh_->value());
-   degree->setQuota(SP,addDegree_criteria_sp_->value());
+   for(int i = 0; i < addDegree_criteria_.size(); i++)
+   {
+       degree->setQuota(addDegree_criteria_.at(i)->text(),addDegree_criteria_.at(i)->value());
+   }
 
    UVManager::instance().addDegree(degree);
 
@@ -117,10 +117,11 @@ void Admin::addDegree()
    showAddDegreePanel(false);
    updateForms();
    addDegree_name_->setText("");
-   addDegree_criteria_cs_->setValue(0);
-   addDegree_criteria_tm_->setValue(0);
-   addDegree_criteria_tsh_->setValue(0);
-   addDegree_criteria_sp_->setValue(0);
+
+   for(int i = 0; i < addDegree_criteria_.size(); i++)
+   {
+       addDegree_criteria_[i]->setValue(0);
+   }
 }
 
 void Admin::addUv()
@@ -134,7 +135,7 @@ void Admin::addUv()
     else
     {
         Uv* uv = new Uv;
-        uv->setCategory(Uv::stringToCategory(addUv_category_->currentText()));
+        uv->setCategory(addUv_category_->currentText());
         uv->setCode(addUv_code_->text());
         uv->setCredits(addUv_credits_->value());
         uv->setFall(addUv_fall_->isChecked());
@@ -186,46 +187,21 @@ void Admin::createAddDegreePanel()
     QGroupBox* addCriteriaBox = new QGroupBox("Critères");
     QVBoxLayout* v1 = new QVBoxLayout;
     addCriteriaBox->setLayout(v1);
-        // CS
-    QLabel* csCriteria = new QLabel("CS :");
-    csCriteria->setFixedWidth(labelWidth);
-    addDegree_criteria_cs_ = new QSpinBox;
-    addDegree_criteria_cs_ ->setMinimum(0);
-    addDegree_criteria_cs_ ->setValue(0);
-    QHBoxLayout* h2 = new QHBoxLayout;
-    h2->addWidget(csCriteria);
-    h2->addWidget(addDegree_criteria_cs_ );
-    v1->addLayout(h2);
-        // TM
-    QLabel* tmCriteria = new QLabel("TM :");
-    tmCriteria->setFixedWidth(labelWidth);
-    addDegree_criteria_tm_ = new QSpinBox;
-    addDegree_criteria_tm_ ->setMinimum(0);
-    addDegree_criteria_tm_ ->setValue(0);
-    QHBoxLayout* h3 = new QHBoxLayout;
-    h3->addWidget(tmCriteria);
-    h3->addWidget(addDegree_criteria_tm_ );
-    v1->addLayout(h3);
-        // TSH
-    QLabel* tshCriteria = new QLabel("TSH :");
-    tshCriteria->setFixedWidth(labelWidth);
-    addDegree_criteria_tsh_ = new QSpinBox;
-    addDegree_criteria_tsh_ ->setMinimum(0);
-    addDegree_criteria_tsh_ ->setValue(0);
-    QHBoxLayout* h4 = new QHBoxLayout;
-    h4->addWidget(tshCriteria);
-    h4->addWidget(addDegree_criteria_tsh_ );
-    v1->addLayout(h4);
-        // SP
-    QLabel* spCriteria = new QLabel("SP :");
-    spCriteria->setFixedWidth(labelWidth);
-    addDegree_criteria_sp_ = new QSpinBox;
-    addDegree_criteria_sp_ ->setMinimum(0);
-    addDegree_criteria_sp_ ->setValue(0);
-    QHBoxLayout* h5 = new QHBoxLayout;
-    h5->addWidget(spCriteria);
-    h5->addWidget(addDegree_criteria_sp_ );
-    v1->addLayout(h5);
+
+    QStringList categories = Uv::categories_;
+    foreach(QString cat,categories)
+    {
+        QLabel* label = new QLabel(cat);
+        label->setFixedWidth(labelWidth);
+        QSpinBox* box = new QSpinBox;
+        box->setMinimum(0);
+        box->setValue(0);
+        QHBoxLayout* h = new QHBoxLayout;
+        h->addWidget(label);
+        h->addWidget(box);
+        v1->addLayout(h);
+    }
+
         // Parent degree
     QLabel* parentDegreeLabel = new QLabel("Inclure la formation dans :");
     v1->addWidget(parentDegreeLabel);
@@ -290,11 +266,14 @@ void Admin::createAddUvPanel()
     // Category
     QLabel* categoryLabel = new QLabel("Catégorie : ");
     categoryLabel->setFixedWidth(labelWidth);
+
     addUv_category_ = new QComboBox;
-    addUv_category_->addItem("CS");
-    addUv_category_->addItem("TM");
-    addUv_category_->addItem("TSH");
-    addUv_category_->addItem("SP");
+    QStringList categories = Uv::categories_;
+    foreach(QString cat,categories)
+    {
+        addUv_category_->addItem(cat);
+    }
+
     QHBoxLayout* categoryLayout = new QHBoxLayout;
     categoryLayout->addWidget(categoryLabel);
     categoryLayout->addWidget(addUv_category_);
@@ -365,11 +344,12 @@ void Admin::createEditUvPanel()
     // Category
     QLabel* categoryLabel = new QLabel("Catégorie : ");
     categoryLabel->setFixedWidth(labelWidth);
+    QStringList categories = Uv::categories_;
     editUv_category_ = new QComboBox;
-    editUv_category_->addItem("CS");
-    editUv_category_->addItem("TM");
-    editUv_category_->addItem("TSH");
-    editUv_category_->addItem("SP");
+    foreach(QString cat,categories)
+    {
+        editUv_category_->addItem(cat);
+    }
     QHBoxLayout* categoryLayout = new QHBoxLayout;
     categoryLayout->addWidget(categoryLabel);
     categoryLayout->addWidget(editUv_category_);
@@ -422,7 +402,7 @@ void Admin::editUv()
     else
     {
         Uv* uv = new Uv;
-        uv->setCategory(Uv::stringToCategory(editUv_category_->currentText()));
+        uv->setCategory(editUv_category_->currentText());
         uv->setCode(editUv_code_->text());
         uv->setCredits(editUv_credits_->value());
         uv->setFall(editUv_fall_->isChecked());
@@ -444,7 +424,7 @@ void Admin::editUv(QString code)
         return;
     }
 
-    editUv_category_->setCurrentText(Uv::categoryToString(editUv_uv_->category()));
+    editUv_category_->setCurrentText(editUv_uv_->category());
     editUv_code_->setText(editUv_uv_->code());
     editUv_credits_->setValue(editUv_uv_->credits());
     editUv_spring_->setChecked(editUv_uv_->spring());

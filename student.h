@@ -19,18 +19,13 @@ public:
     const QList<const Degree*>& degrees() const {return degrees_;}
     void deleteDegree(const QString& title);
     void deleteUV(const QString& codeUV, const QString& semester);
-    unsigned int equivalenceCs() const {return equivalenceCs_;}
-    unsigned int equivalenceTm() const {return equivalenceTm_;}
-    unsigned int equivalenceTsh() const {return equivalenceTsh_;}
-    unsigned int equivalenceSp() const {return equivalenceSp_;}
+    unsigned int equivalence(const QString &cat) {return equivalences_.contains(cat) ? equivalences_[cat] : 0;}
+    const QMap<QString,unsigned int> & equivalences() const {return equivalences_;}
     const QList<Expectation*> &exp() const {return exp_;}
     const QString & firstName() const {return firstName_;}
     const QString & lastName() const {return lastName_;}
     const QString & login() const {return login_;}
-    void setEquivalenceCs(const unsigned int &equivalenceCs) {equivalenceCs_ = equivalenceCs;}
-    void setEquivalenceTm(const unsigned int &equivalenceTm) {equivalenceTm_ = equivalenceTm;}
-    void setEquivalenceTsh(const unsigned int &equivalenceTsh) {equivalenceTsh_ = equivalenceTsh;}
-    void setEquivalenceSp(const unsigned int &equivalenceSp) {equivalenceSp_ = equivalenceSp;}
+    void setEquivalence(const QString &cat,unsigned int eq) {equivalences_[cat] = eq;}
     void setFirstName(const QString &firstName) {firstName_ = firstName;}
     void setLastName(const QString &lastName) {lastName_ = lastName;}
     void setLogin(const QString &login) {login_ = login;}
@@ -44,10 +39,7 @@ private:
 
     QList<const Degree*> degrees_;
     QList<Expectation*> exp_;
-    unsigned int equivalenceCs_;
-    unsigned int equivalenceTm_;
-    unsigned int equivalenceTsh_;
-    unsigned int equivalenceSp_;
+    QMap<QString,unsigned int> equivalences_;
     QString firstName_;
     QString lastName_;
     QString login_;

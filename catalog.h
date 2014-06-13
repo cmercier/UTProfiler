@@ -18,18 +18,15 @@ public slots:
     void updateCatalog();
 
 private:
-    QCheckBox* cs_;
+    QList<QCheckBox*> categories_;
     QComboBox* degree_;
     QHBoxLayout* degreeLayout_;
     bool editCatalog_;
     QCheckBox* fall_;
     bool isCriteriaChange_;
     const Degree* selectedDegree_;
-    QCheckBox* sp_;
     QCheckBox* spring_;
     QPushButton* submit_;
-    QCheckBox* tm_;
-    QCheckBox* tsh_;
     QHBoxLayout* uvsLayout_;
     QScrollArea* uvsScrollArea_;
 };

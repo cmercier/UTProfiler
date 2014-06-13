@@ -17,10 +17,10 @@ public:
     int depth() const;
     const Degree* parent() const {return parent_;}
     void removeChildren();
-    int quota(Category category) const;
-    const QMap<Category,int> & quotas() const {return quotas_;}
+    int quota(QString category) const;
+    const QMap<QString,int> & quotas() const {return quotas_;}
     void setParent(Degree *parent);
-    void setQuota(Category category,int quota);
+    void setQuota(QString category,int quota);
     void setTitle(const QString &title) {title_ = title;}
     void setType(const QString &type) {type_ = type;}
     const QString & title() const {return title_;}
@@ -32,7 +32,7 @@ private:
 
     QList<Degree*> children_;
     Degree* parent_;
-    QMap<Category,int> quotas_;
+    QMap<QString,int> quotas_;
     QString title_;
     QString type_;
     QList<const Uv*> uvs_;

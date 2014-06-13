@@ -30,10 +30,7 @@ private:
     void createEditUvPanel();
     void updateForms();
 
-    QSpinBox* addDegree_criteria_cs_;
-    QSpinBox* addDegree_criteria_tm_;
-    QSpinBox* addDegree_criteria_tsh_;
-    QSpinBox* addDegree_criteria_sp_;
+    QList<QSpinBox*> addDegree_criteria_;
     QLineEdit* addDegree_name_;
     QComboBox* addDegree_parent_;
     QComboBox* addDegree_uvs_;
