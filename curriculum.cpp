@@ -237,10 +237,11 @@ void Curriculum::saveQLineEdit()
 {
     Student* student = UVManager::instance().student();
     // Sauvegarde des champs dans l'objet Student
-    student->setEquivalenceCs(equivalenceCs_->text().toUInt());
-    student->setEquivalenceTm(equivalenceTm_->text().toUInt());
-    student->setEquivalenceTsh(equivalenceTsh_->text().toUInt());
-    student->setEquivalenceSp(equivalenceSp_->text().toUInt());
+    QStringList cat = Uv::categories_;
+    for(int i = 0; i < equivalences_.size(); i++)
+    {
+        student->setEquivalence(cat.at(i),equivalences_.at(i)->text().toUInt());
+    }
     student->setFirstName(firstName_->text());
     student->setLastName(lastName_->text());
 }
@@ -290,31 +291,25 @@ void Curriculum::generationView()
     // Equivalences
     QLabel* equivalenceLabel = new QLabel("Equivalences :");
     equivalenceLabel->setFixedWidth(80);
-    QLabel* equivalenceCsLabel = new QLabel("CS :");
-    QLabel* equivalenceTmLabel = new QLabel("TM :");
-    QLabel* equivalenceTshLabel = new QLabel("TSH :");
-    QLabel* equivalenceSpLabel = new QLabel("SP :");
-    equivalenceCs_ = new QLineEdit(QString::number(student->equivalenceCs()));
-    equivalenceTm_ = new QLineEdit(QString::number(student->equivalenceTm()));
-    equivalenceTsh_ = new QLineEdit(QString::number(student->equivalenceTsh()));
-    equivalenceSp_ = new QLineEdit(QString::number(student->equivalenceSp()));
-    equivalenceCs_->setFixedWidth(50);
-    equivalenceTm_->setFixedWidth(50);
-    equivalenceTsh_->setFixedWidth(50);
-    equivalenceSp_->setFixedWidth(50);
-    equivalenceCs_->setReadOnly(!editStudent_);
-    equivalenceTm_->setReadOnly(!editStudent_);
-    equivalenceTsh_->setReadOnly(!editStudent_);
-    equivalenceSp_->setReadOnly(!editStudent_);
     equivalence_->addWidget(equivalenceLabel);
-    equivalence_->addWidget(equivalenceCsLabel);
-    equivalence_->addWidget(equivalenceCs_);
-    equivalence_->addWidget(equivalenceTmLabel);
-    equivalence_->addWidget(equivalenceTm_);
-    equivalence_->addWidget(equivalenceTshLabel);
-    equivalence_->addWidget(equivalenceTsh_);
-    equivalence_->addWidget(equivalenceSpLabel);
-    equivalence_->addWidget(equivalenceSp_);
+    QStringList categories = Uv::categories_;
+    while(equivalences_.size() > 0)
+    {
+        QLineEdit* eq = equivalences_.first();
+        equivalences_.pop_front();
+        delete eq;
+    }
+    foreach(QString cat,categories)
+    {
+        QLabel* label = new QLabel(cat);
+        QLineEdit* lineEdit = new QLineEdit(QString::number(student->equivalence(cat)));
+        equivalences_.push_back(lineEdit);
+        QObject::connect(lineEdit,SIGNAL(editingFinished()),this,SLOT(saveQLineEdit()));
+        lineEdit->setFixedWidth(50);
+        lineEdit->setReadOnly(!editStudent_);
+        equivalence_->addWidget(label);
+        equivalence_->addWidget(lineEdit);
+    }
     equivalence_->insertStretch(-1);
 
 

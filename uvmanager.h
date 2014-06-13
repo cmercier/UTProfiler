@@ -40,6 +40,7 @@ private:
     void addUvs(Degree *degree, QDomElement &element);
     void addUvs(Semester *semester, QDomElement &element);
     void addQuotas(Degree *degree, QDomElement &element);
+    void loadCategories(const QString &fileName);
     void loadDegrees(const QString &fileName);
     void loadStudents(const QString &studentsFileName);
     void loadUvs(const QString &fileName);
@@ -62,6 +63,7 @@ private:
     };
     static Handler handler_;
 
+    QString categoriesFilePath_;
     static UVManager* instance_;
     QList<Degree*> degrees_;
     QString degreesFilePath_;

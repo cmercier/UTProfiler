@@ -4,6 +4,7 @@ UVManager* UVManager::instance_ = 0;
 UVManager::Handler UVManager::handler_=Handler();
 
 UVManager::UVManager():
+    categoriesFilePath_("categories.xml"),
     degreesFilePath_("formations.xml"),
     student_(0),
     studentsFilePath_("etudiants.xml"),
@@ -95,7 +96,7 @@ void UVManager::addQuotas(Degree *degree, QDomElement &element)
 {
     for(QDomElement quotaElement = element.firstChildElement("quota"); !quotaElement.isNull(); quotaElement = quotaElement.nextSiblingElement("quota"))
     {
-        Category category = Uv::stringToCategory(element.attribute("categorie"));
+        QString category = element.attribute("categorie");
         int quota = quotaElement.text().toInt();
         degree->setQuota(category,quota);
     }
@@ -166,6 +167,7 @@ void UVManager::load()
 {
     try
     {
+        loadCategories(categoriesFilePath_);
         loadUvs(uvsFilePath_);
         loadDegrees(degreesFilePath_);
         loadStudents(studentsFilePath_);
@@ -174,6 +176,25 @@ void UVManager::load()
     {
         qDebug() << e.getInfo();
     }
+}
+
+void UVManager::loadCategories(const QString &fileName)
+{
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly))
+        throw UTProfilerException("Failed to open " + fileName + " in UVManager::loadDegrees.");
+
+    QDomDocument dom;
+    dom.setContent(&file);
+
+    QDomElement categories = dom.documentElement();
+
+    for(QDomElement catElem = categories.firstChildElement("categorie");!catElem.isNull();catElem = catElem.nextSiblingElement("categorie"))
+    {
+        Uv::categories_.push_back(catElem.text());
+    }
+
+    file.close();
 }
 
 void UVManager::loadDegrees(const QString &fileName)
@@ -214,10 +235,11 @@ void UVManager::loadStudents(const QString &studentsFileName)
         student->setLastName(studentElement.firstChildElement("nom").text());
         addDegrees(student, studentElement); // load degrees
         addSemesters(student, studentElement); // load semsters and uvs
-        student->setEquivalenceCs(studentElement.firstChildElement("equivalence").firstChildElement("cs").text().toUInt());
-        student->setEquivalenceTm(studentElement.firstChildElement("equivalence").firstChildElement("tm").text().toUInt());
-        student->setEquivalenceTsh(studentElement.firstChildElement("equivalence").firstChildElement("tsh").text().toUInt());
-        student->setEquivalenceSp(studentElement.firstChildElement("equivalence").firstChildElement("sp").text().toUInt());
+
+        for(QDomElement eqElem = studentElement.firstChildElement("equivalence");!eqElem.isNull();eqElem = eqElem.nextSiblingElement("equivalence"))
+        {
+            student->setEquivalence(eqElem.attribute("categorie"),eqElem.text().toUInt());
+        }
         addStudent(student);
 
         for(QDomElement expElem = studentElement.firstChildElement("prevision");!expElem.isNull();expElem = expElem.nextSiblingElement("prevision"))
@@ -247,7 +269,7 @@ void UVManager::loadUvs(const QString &fileName)
     for(QDomElement uvElement = uvs.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
         Uv* uv = new Uv;
-        uv->setCategory(Uv::stringToCategory(uvElement.firstChildElement("categorie").text()));
+        uv->setCategory(uvElement.firstChildElement("categorie").text());
         uv->setCode(uvElement.firstChildElement("code").text());
         uv->setCredits(uvElement.firstChildElement("credits").text().toFloat());
         uv->setFall(uvElement.attribute("automne") == "true" ? true : false);
@@ -302,13 +324,13 @@ void UVManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &d
         degreeElement.appendChild(uvElement);
     }
 
-    const QMap<Category,int> &quotas = degree->quotas();
-    QMapIterator<Category,int> it(quotas);
+    const QMap<QString,int> &quotas = degree->quotas();
+    QMapIterator<QString,int> it(quotas);
     while(it.hasNext())
     {
         it.next();
         QDomElement quotaElement = dom.createElement("quota");
-        quotaElement.setAttribute("categorie",Uv::categoryToString(it.key()));
+        quotaElement.setAttribute("categorie",it.key());
         quotaElement.appendChild(dom.createTextNode(QString::number(it.value())));
         degreeElement.appendChild(quotaElement);
     }
@@ -416,26 +438,15 @@ void UVManager::saveStudents()
         }
 
         // Equivalences
-        QDomElement equivalences = dom.createElement("equivalence");
-
-        QDomElement equivalenceCs = dom.createElement("cs");
-        equivalenceCs.appendChild(dom.createTextNode(QString::number(student->equivalenceCs())));
-        equivalences.appendChild(equivalenceCs);
-
-        QDomElement equivalenceTm = dom.createElement("tm");
-        equivalenceTm.appendChild(dom.createTextNode(QString::number(student->equivalenceTm())));
-        equivalences.appendChild(equivalenceTm);
-
-        QDomElement equivalenceTsh = dom.createElement("tsh");
-        equivalenceTsh.appendChild(dom.createTextNode(QString::number(student->equivalenceTsh())));
-        equivalences.appendChild(equivalenceTsh);
-
-        QDomElement equivalenceSp = dom.createElement("sp");
-        equivalenceSp.appendChild(dom.createTextNode(QString::number(student->equivalenceSp())));
-        equivalences.appendChild(equivalenceSp);
-
-        studentElement.appendChild(equivalences);
-
+        QMapIterator<QString,unsigned int> it(student->equivalences());
+        while(it.hasNext())
+        {
+            it.next();
+            QDomElement eqElem = dom.createElement("equivalence");
+            eqElem.setAttribute("categorie",it.key());
+            eqElem.appendChild(dom.createTextNode(QString::number(it.value())));
+            studentElement.appendChild(eqElem);
+        }
 
         students.appendChild(studentElement);
     }
@@ -467,7 +478,7 @@ void UVManager::saveUvs()
         QDomElement uvElement = dom.createElement("uv");
 
         QDomElement category = dom.createElement("categorie");
-        category.appendChild(dom.createTextNode(Uv::categoryToString(uv->category())));
+        category.appendChild(dom.createTextNode(uv->category()));
         uvElement.appendChild(category);
 
         QDomElement code = dom.createElement("code");

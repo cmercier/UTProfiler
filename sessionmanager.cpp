@@ -42,10 +42,11 @@ void SessionManager::load(const QString &fileName)
         student->setLastName(studentElement.firstChildElement("nom").text());
         //addDegrees(student, studentElement); // load degrees
         //addUvs(student, studentElement); // load uvs
-        student->setEquivalenceCs(studentElement.firstChildElement("equivalence").firstChildElement("cs").text().toUInt());
-        student->setEquivalenceTm(studentElement.firstChildElement("equivalence").firstChildElement("tm").text().toUInt());
-        student->setEquivalenceTsh(studentElement.firstChildElement("equivalence").firstChildElement("tsh").text().toUInt());
-        student->setEquivalenceSp(studentElement.firstChildElement("equivalence").firstChildElement("sp").text().toUInt());
+
+        for(QDomElement eqElem = studentElement.firstChildElement("equivalence");!eqElem.isNull();eqElem = eqElem.nextSiblingElement("equivalence"))
+        {
+            student->setEquivalence(eqElem.attribute("categorie"),eqElem.text().toUInt());
+        }
         addStudent(student);
     }
 

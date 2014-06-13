@@ -2,10 +2,6 @@
 #include "uv.h"
 
 Student::Student():
-    equivalenceCs_(0),
-    equivalenceTm_(0),
-    equivalenceTsh_(0),
-    equivalenceSp_(0),
     firstName_(""),
     lastName_("")
 {

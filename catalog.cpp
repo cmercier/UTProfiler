@@ -49,24 +49,16 @@ Catalog::Catalog():
 
     // Category
     QLabel* categoryLabel = new QLabel("Catégorie : ");
-    cs_ = new QCheckBox("CS");
-    cs_->setChecked(true);
-    QObject::connect(cs_,SIGNAL(toggled(bool)),this,SLOT(criteriaChanged()));
-    tm_ = new QCheckBox("TM");
-    tm_->setChecked(true);
-    QObject::connect(tm_,SIGNAL(toggled(bool)),this,SLOT(criteriaChanged()));
-    tsh_ = new QCheckBox("TSH");
-    tsh_->setChecked(true);
-    QObject::connect(tsh_,SIGNAL(toggled(bool)),this,SLOT(criteriaChanged()));
-    sp_ = new QCheckBox("SP");
-    sp_->setChecked(true);
-    QObject::connect(sp_,SIGNAL(toggled(bool)),this,SLOT(criteriaChanged()));
     QHBoxLayout* l3 = new QHBoxLayout;
     l3->addWidget(categoryLabel);
-    l3->addWidget(cs_);
-    l3->addWidget(tm_);
-    l3->addWidget(tsh_);
-    l3->addWidget(sp_);
+    foreach(QString cat,Uv::categories_)
+    {
+        QCheckBox* catBox = new QCheckBox(cat);
+        catBox->setChecked(true);
+        QObject::connect(catBox,SIGNAL(toggled(bool)),this,SLOT(criteriaChanged()));
+        categories_.push_back(catBox);
+        l3->addWidget(catBox);
+    }
     l3->insertStretch(-1);
     l1->addLayout(l3);
 
@@ -74,6 +66,7 @@ Catalog::Catalog():
     submit_ = new QPushButton("Afficher les uvs");
     QObject::connect(submit_,SIGNAL(clicked()),this,SLOT(updateCatalog()));
     l1->addWidget(submit_);
+
 
     // Uvs
     uvsLayout_ = new QHBoxLayout;
@@ -178,18 +171,22 @@ void Catalog::updateCatalog()
     while(i < uvs.size())
     {
         const Uv* uv = uvs.at(i);
-        if(
-                (
-                    (fall_->isChecked() && uv->fall()) ||
-                    (spring_->isChecked() && uv->spring())
-                ) &&
-                (
-                    (cs_->isChecked() && uv->category() == CS) ||
-                    (tsh_->isChecked() && uv->category() == TSH) ||
-                    (tm_->isChecked() && uv->category() == TM) ||
-                    (sp_->isChecked() && uv->category() == SP)
-                )
-           )
+        if((uv->fall() && !fall_->isChecked()) || (uv->spring() && !spring_->isChecked()))
+        {
+            uvs.removeAt(i);
+            continue;
+        }
+
+        bool valid(false);
+        for(int i = 0; i < categories_.size(); i++)
+        {
+            if(categories_.at(i)->isChecked() && uv->category() == categories_.at(i)->text())
+            {
+                valid = true;
+            }
+        }
+
+        if(valid)
             i++;
         else
             uvs.removeAt(i);
