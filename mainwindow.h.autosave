@@ -15,7 +15,8 @@
  * - la partie centrale affiche l'onglet ouvert.
  *
  * L'application comporte 5 onglets:
- * -
+ * - L'onglet 'connexion' permet à l'étudiant de se connecter où de s'enregistrer dans la base.
+ * - L'onglet 'Mon parcours'
  */
 
 class MainWindow: public QMainWindow
