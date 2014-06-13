@@ -14,7 +14,6 @@ Catalog::Catalog():
     QLabel* degreeLabel = new QLabel("Formation : ");
     degree_ = new QComboBox;
     const QList<Degree*> &degrees = UVManager::instance().degrees();
-    qDebug() << degrees.size();
     degree_->insertItem(0,"Choix " + degrees.first()->type());
     int count = 1;
     for(int i = 0; i < degrees.size(); i++)

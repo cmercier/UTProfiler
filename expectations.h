@@ -13,16 +13,25 @@ public:
     Expectations();
 
 public slots:
+    void addWantedDegree();
+    void selectDegree(const QString &);
     void updateExpComboBox();
     void updateExpPanel();
+    void updateUnwantedUvs();
+    void updateWantedUvs();
 
 private:
     void createExpPanel();
 
+    QHBoxLayout* degreeLayout_;
+    QComboBox* degreesBox_;
     QVBoxLayout* expLayout_;
     QComboBox* expSelect_;
     QScrollArea* expScrollArea_;
     QLineEdit* name_;
+    const Degree* selectedDegree_;
+    QVBoxLayout* unwantedUvsLayout_;
+    QVBoxLayout* wantedUvsLayout_;
 };
 
 #endif // EXPECTATIONS_H
