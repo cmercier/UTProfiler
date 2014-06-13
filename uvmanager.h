@@ -10,15 +10,18 @@
 class UVManager
 {
 public:
+    void addDegree(Degree *degree) {degrees_.push_back(degree);}
     void addUv(Uv* uv);
     void addStudent(const QString &login);
     void addStudent(Student *student);
     bool connect(const QString &login);
     const QList<Degree*> & degrees() const {return degrees_;}
-    const Degree * degreeWithTitle(const QString &title);
+    const QString & degreesFilePath() const {return degreesFilePath_;}
+    Degree * degreeWithTitle(const QString &title);
     QList<const Degree*> degreesWithParent(const QString &parentTitle);
     static UVManager& instance();
     void load();
+    void removeDegree(const QString &title);
     void removeUv(const QString &code);
     Student* student() {return student_;}
     const QList<Student*> students() const {return students_;}

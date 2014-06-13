@@ -25,6 +25,15 @@ int Degree::depth() const
     return 0;
 }
 
+void Degree::removeChildren()
+{
+    while(children_.size() > 0)
+    {
+        children_.first()->setParent(0);
+        children_.pop_front();
+    }
+}
+
 int Degree::quota(Category category) const
 {
     if(quotas_.contains(category))

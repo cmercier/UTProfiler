@@ -35,25 +35,6 @@ void UVManager::addDegree(QDomElement &element, Degree *parent)
     degrees_.push_back(degree);
 }
 
-void UVManager::addUv(Uv *uv)
-{
-    if(!uv)
-        return;
-
-    bool edited(false);
-    for(int i = 0; i < uvs_.size(); i++)
-    {
-        if(uvs_.at(i)->code() == uv->code())
-        {
-            uvs_.replace(i,uv);
-            edited = true;
-        }
-    }
-
-    if(!edited)
-        uvs_.push_back(uv);
-}
-
 void UVManager::addDegrees(Student *student, QDomElement &element)
 {
     for(QDomElement degreeElement = element.firstChildElement("cursus"); !degreeElement.isNull(); degreeElement = degreeElement.nextSiblingElement("cursus"))
@@ -73,6 +54,23 @@ void UVManager::addSemesters(Student *student, QDomElement &element)
         addUvs(semester, semesterElement);
         student->addSemester(semester);
     }
+}
+
+void UVManager::addUv(Uv *uv)
+{
+    if(!uv)
+        return;
+
+    for(int i = 0; i < uvs_.size(); i++)
+    {
+        if(uvs_.at(i)->code() == uv->code())
+        {
+            uvs_.replace(i,uv);
+            return;
+        }
+    }
+
+    uvs_.push_back(uv);
 }
 
 void UVManager::addUvs(Degree *degree, QDomElement &element)
@@ -142,7 +140,7 @@ QList<const Degree*> UVManager::degreesWithParent(const QString &parentTitle)
     return result;
 }
 
-const Degree* UVManager::degreeWithTitle(const QString &title)
+Degree* UVManager::degreeWithTitle(const QString &title)
 {
     for(int i = 0; i < degrees_.size(); i++)
     {
@@ -259,6 +257,19 @@ void UVManager::loadUvs(const QString &fileName)
     }
 
     file.close();
+}
+
+void UVManager::removeDegree(const QString &title)
+{
+    for(int i = 0; i < degrees_.size(); i++)
+    {
+        if(degrees_.at(i)->title() == title)
+        {
+            degrees_.at(i)->removeChildren();
+            degrees_.removeAt(i);
+            return;
+        }
+    }
 }
 
 void UVManager::removeUv(const QString &code)
