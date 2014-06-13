@@ -60,8 +60,6 @@ Curriculum::Curriculum():
 
 Curriculum::~Curriculum()
 {
-    if (this->isEnabled())
-        saveQLineEdit();
 }
 
 void Curriculum::addUV()

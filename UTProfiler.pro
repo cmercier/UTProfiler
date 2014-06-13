@@ -15,7 +15,8 @@ HEADERS += \
     admin.h \
     expectations.h \
     expectation.h \
-    connection.h
+    connection.h \
+    semester.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -32,4 +33,5 @@ SOURCES += \
     admin.cpp \
     expectations.cpp \
     expectation.cpp \
-    connection.cpp
+    connection.cpp \
+    semester.cpp

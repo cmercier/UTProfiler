@@ -6,27 +6,7 @@
 #include "uv.h"
 #include "degree.h"
 #include "expectation.h"
-
-class Semester
-{
-public:
-    void addUv(const QString, const Grade);
-    void deleteUV(const QString& codeUV);
-    const QString & title() const {return title_;}
-    void setTitle(const QString &title) {title_ = title;}
-    const QMap<QString, Grade> uvs() const {return uvs_;}
-
-private:
-    Semester();
-    Semester(const Semester &semester);
-    Semester& operator=(const Semester &semester);
-    friend class UVManager;
-    friend class SessionManager;
-    friend class Student;
-
-    QString title_;
-    QMap<QString, Grade> uvs_; // doute sur la référence constante
-};
+#include "semester.h"
 
 class Student
 {
