@@ -17,6 +17,7 @@ public:
     void addUV(const QString codeUV, const QString semester, Grade grade);
     void clearUvs();
     const QList<const Degree*>& degrees() const {return degrees_;}
+    void deleteDegree(const QString& title);
     const QString & name() const {return name_;}
     void setName(const QString &name) {name_ = name;}
     const QList<const Uv*>& rejectedUvs() const {return rejectedUvs_;}

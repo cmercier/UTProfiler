@@ -15,6 +15,7 @@ public:
 public slots:
     void addWantedDegree();
     void createExpPanel();
+    void deleteDegree();
     void deleteExp();
     void saveDatas();
     void selectDegree(const QString &);
@@ -31,6 +32,7 @@ private:
     Expectation* exp_;
     QHBoxLayout* degreeLayout_;
     QComboBox* degreesBox_;
+    QComboBox* deleteDegree_;
     QVBoxLayout* expLayout_;
     QComboBox* expSelect_;
     QScrollArea* expScrollArea_;

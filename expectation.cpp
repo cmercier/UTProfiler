@@ -55,3 +55,15 @@ void Expectation::clearUvs()
     rejectedUvs_.clear();
     requiredUvs_.clear();
 }
+
+void Expectation::deleteDegree(const QString& title)
+{
+    for (int i = 0; i < degrees_.size(); i++)
+    {
+        if (degrees_[i]->title() == title)
+        {
+            degrees_.removeAt(i);
+            return;
+        }
+    }
+}

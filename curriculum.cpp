@@ -54,8 +54,6 @@ Curriculum::Curriculum():
     mainLayout->addLayout(l1);
     mainLayout->addWidget(semestersScrollArea_);
     mainLayout->addLayout(deleteUvLayout_);
-
-    //generationView();
 }
 
 void Curriculum::addUV()

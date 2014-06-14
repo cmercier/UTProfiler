@@ -121,16 +121,29 @@ void Expectations::createExpPanel()
     for(int i = 0; i < exp_->degrees().size(); i++)
     {
         const Degree* degree = exp_->degrees()[i];
-
         QHBoxLayout* degreesLayout = new QHBoxLayout;
-
         getParentDegree(degreesLayout, degree);
-
         degreesLayout->insertStretch(-1);
-
         v1->addLayout(degreesLayout);
-
     }
+    QHBoxLayout* deleteDegreeLayout = new QHBoxLayout;
+    deleteDegree_ = new QComboBox;
+
+    deleteDegree_->insertItem(0, "Choix du cursus");
+    for(int i = 0; i < exp_->degrees().size(); i++)
+    {
+        deleteDegree_->insertItem(i + 1, exp_->degrees().at(i)->title());
+    }
+
+    QPushButton* deleteDegreeButton = new QPushButton("Supprimer le cursus");
+    QObject::connect(deleteDegreeButton,SIGNAL(clicked()),this,SLOT(deleteDegree()));
+
+    deleteDegreeLayout->addWidget(deleteDegree_);
+    deleteDegreeLayout->insertStretch(-1);
+    deleteDegreeLayout->addWidget(deleteDegreeButton);
+
+    v1->addLayout(deleteDegreeLayout);
+
     v1->insertStretch(-1);
 
     QHBoxLayout* h4 = new QHBoxLayout;
@@ -185,6 +198,12 @@ void Expectations::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degr
     }
 
     degreeLayout->addWidget(degreeTitleLabel);
+}
+
+void Expectations::deleteDegree()
+{
+    exp_->deleteDegree(deleteDegree_->currentText());
+    createExpPanel();
 }
 
 void Expectations::deleteExp()
