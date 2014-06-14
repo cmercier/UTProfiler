@@ -2,6 +2,12 @@
 #define UTPROFILEREXCEPTION_H
 #include <QString>
 
+/**
+ * @brief The UTProfilerException class
+ * Classe de gestion des exceptions.
+ * Elle est utilisée par les fonctions de chargement et de sauvegarde de données dans les fichiers xml.
+ */
+
 class UTProfilerException
 {
 public:

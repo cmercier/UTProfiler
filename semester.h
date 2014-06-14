@@ -6,6 +6,12 @@
 #include "uv.h"
 #include "degree.h"
 
+/**
+ * @brief The Semester class
+ * Cette classe contient toutes les informations propres à un semestre.
+ * Elle comporte l'ensemble des uvs réalisées ou à réaliser.
+ */
+
 class Semester
 {
 public:
@@ -20,7 +26,6 @@ private:
     Semester(const Semester &semester);
     Semester& operator=(const Semester &semester);
     friend class UVManager;
-    friend class SessionManager;
     friend class Student;
 
     QString title_;

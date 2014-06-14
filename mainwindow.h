@@ -3,7 +3,6 @@
 #include <QDebug>
 #include "catalog.h"
 #include "curriculum.h"
-#include "sessionmanager.h"
 #include "expectations.h"
 #include "admin.h"
 #include "connection.h"
