@@ -10,7 +10,6 @@ HEADERS += \
     student.h \
     catalog.h \
     utilities.h \
-    sessionmanager.h \
     curriculum.h \
     admin.h \
     expectations.h \
@@ -28,7 +27,6 @@ SOURCES += \
     student.cpp \
     catalog.cpp \
     utilities.cpp \
-    sessionmanager.cpp \
     curriculum.cpp \
     admin.cpp \
     expectations.cpp \
