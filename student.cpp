@@ -57,6 +57,11 @@ void Student::deleteDegree(const QString& title)
     }
 }
 
+void Student::deleteExp(Expectation* exp)
+{
+    exp_.removeOne(exp);
+}
+
 void Student::deleteUV(const QString& codeUV, const QString& semester)
 {
     for (int i = 0; i < semesters_.size(); i++)

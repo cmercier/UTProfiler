@@ -18,6 +18,7 @@ public:
     void addUV(const QString codeUV, const QString semester, Grade grade);
     const QList<const Degree*>& degrees() const {return degrees_;}
     void deleteDegree(const QString& title);
+    void deleteExp(Expectation* exp);
     void deleteUV(const QString& codeUV, const QString& semester);
     unsigned int equivalence(const QString &cat) {return equivalences_.contains(cat) ? equivalences_[cat] : 0;}
     const QMap<QString,unsigned int> & equivalences() const {return equivalences_;}

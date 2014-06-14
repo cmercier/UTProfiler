@@ -2,7 +2,8 @@
 #include <QDebug>
 #include "utilities.h"
 
-Expectations::Expectations()
+Expectations::Expectations():
+    selectedDegree_(0)
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
@@ -15,10 +16,13 @@ Expectations::Expectations()
     expSelect_->setFixedWidth(150);
     QObject::connect(expSelect_,SIGNAL(activated(QString)),this,SLOT(updateExp()));
     QObject::connect(expSelect_,SIGNAL(activated(QString)),this,SLOT(createExpPanel()));
+    QPushButton* deleteExp = new QPushButton("Supprimer la prévision");
+    QObject::connect(deleteExp,SIGNAL(clicked()),this,SLOT(deleteExp()));
 
     QHBoxLayout* h1 = new QHBoxLayout;
     h1->addWidget(expSelectLabel);
     h1->addWidget(expSelect_);
+    h1->addWidget(deleteExp);
     h1->insertStretch(-1);
     mainLayout->addLayout(h1);
 
@@ -41,7 +45,8 @@ Expectations::Expectations()
 
 void Expectations::addWantedDegree()
 {
-    exp_->addDegree(selectedDegree_);
+   if (selectedDegree_ != 0)
+       exp_->addDegree(selectedDegree_);
 
     saveDatas();
     createExpPanel();
@@ -182,6 +187,17 @@ void Expectations::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degr
     degreeLayout->addWidget(degreeTitleLabel);
 }
 
+void Expectations::deleteExp()
+{
+    if (expSelect_->currentIndex() == 0)
+        return;
+
+    UVManager::instance().student()->deleteExp(exp_);
+    updateExpComboBox();
+    updateExp();
+    createExpPanel();
+}
+
 void Expectations::saveDatas()
 {
     // Nom
@@ -192,10 +208,9 @@ void Expectations::saveDatas()
 
     for(int i = 0; i < unwantedUvsLayout_->count() - 1; i++)
     {
-        QCheckBox* cb = dynamic_cast<QCheckBox*>(unwantedUvsLayout_->takeAt(i)->widget());
+        QCheckBox* cb = dynamic_cast<QCheckBox*>(unwantedUvsLayout_->itemAt(i)->widget());
         if (cb->isChecked())
         {
-            qDebug() << "add rejected";
             const Uv *uv = UVManager::instance().uvFromCode(cb->text());
             if(uv)
                 exp_->addRejectedUv(uv);
@@ -204,16 +219,15 @@ void Expectations::saveDatas()
 
     for(int i = 0; i < wantedUvsLayout_->count() - 1; i++)
     {
-        QCheckBox* cb = dynamic_cast<QCheckBox*>(wantedUvsLayout_->takeAt(i)->widget());
+
+        QCheckBox* cb = dynamic_cast<QCheckBox*>(wantedUvsLayout_->itemAt(i)->widget());
         if (cb->isChecked())
         {
-            qDebug() << "add required";
             const Uv *uv = UVManager::instance().uvFromCode(cb->text());
             if(uv)
                 exp_->addRequiredUv(uv);
         }
     }
-
 }
 
 void Expectations::selectDegree(const QString &title)
@@ -335,6 +349,8 @@ void Expectations::validateExp()
 
     saveDatas();
     updateExpComboBox();
+    updateExp();
+    createExpPanel();
 }
 
 

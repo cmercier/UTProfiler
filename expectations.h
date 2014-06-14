@@ -15,6 +15,7 @@ public:
 public slots:
     void addWantedDegree();
     void createExpPanel();
+    void deleteExp();
     void saveDatas();
     void selectDegree(const QString &);
     void updateExp();
