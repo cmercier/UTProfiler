@@ -22,6 +22,7 @@ public slots:
     void updateExpPanel();
     void updateUnwantedUvs();
     void updateWantedUvs();
+    void validateExp();
 
 private:
     void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);

@@ -13,13 +13,14 @@ public:
     void addDegree(const Degree *degree);
     void addRejectedUv(const Uv* uv);
     void addRequiredUv(const Uv* uv);
-    void addSemester(Semester *semester);
+    void addSemester(Semester *semester);    
     void addUV(const QString codeUV, const QString semester, Grade grade);
+    void clearUvs();
     const QList<const Degree*>& degrees() const {return degrees_;}
     const QString & name() const {return name_;}
     void setName(const QString &name) {name_ = name;}
-    QList<const Uv*> rejectedUvs() const {return rejectedUvs_;}
-    QList<const Uv*> requiredUvs() const {return requiredUvs_;}
+    const QList<const Uv*>& rejectedUvs() const {return rejectedUvs_;}
+    const QList<const Uv*>& requiredUvs() const {return requiredUvs_;}
     const QList<Semester*>& semesters() const {return semesters_;}
 
 

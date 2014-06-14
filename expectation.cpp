@@ -49,3 +49,9 @@ void Expectation::addUV(const QString codeUV, const QString semester, Grade grad
     semesterP->addUv(codeUV, grade);
     addSemester(semesterP);
 }
+
+void Expectation::clearUvs()
+{
+    rejectedUvs_.clear();
+    requiredUvs_.clear();
+}

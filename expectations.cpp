@@ -33,7 +33,7 @@ Expectations::Expectations()
 
     // Validation button
     QPushButton* validate = new QPushButton("Valider");
-    QObject::connect(validate,SIGNAL(clicked()),this,SLOT(saveDatas()));
+    QObject::connect(validate,SIGNAL(clicked()),this,SLOT(validateExp()));
     mainLayout->addWidget(validate);
 
     mainLayout->insertStretch(-1);
@@ -42,6 +42,8 @@ Expectations::Expectations()
 void Expectations::addWantedDegree()
 {
     exp_->addDegree(selectedDegree_);
+
+    saveDatas();
     createExpPanel();
 }
 
@@ -182,8 +184,36 @@ void Expectations::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degr
 
 void Expectations::saveDatas()
 {
-    if (expSelect_->currentText() == "Nouvelle prévision")
-        UVManager::instance().addExp
+    // Nom
+    exp_->setName(name_->text());
+
+    // Listes d'uvs
+    exp_->clearUvs();
+
+    for(int i = 0; i < unwantedUvsLayout_->count() - 1; i++)
+    {
+        QCheckBox* cb = dynamic_cast<QCheckBox*>(unwantedUvsLayout_->takeAt(i)->widget());
+        if (cb->isChecked())
+        {
+            qDebug() << "add rejected";
+            const Uv *uv = UVManager::instance().uvFromCode(cb->text());
+            if(uv)
+                exp_->addRejectedUv(uv);
+        }
+    }
+
+    for(int i = 0; i < wantedUvsLayout_->count() - 1; i++)
+    {
+        QCheckBox* cb = dynamic_cast<QCheckBox*>(wantedUvsLayout_->takeAt(i)->widget());
+        if (cb->isChecked())
+        {
+            qDebug() << "add required";
+            const Uv *uv = UVManager::instance().uvFromCode(cb->text());
+            if(uv)
+                exp_->addRequiredUv(uv);
+        }
+    }
+
 }
 
 void Expectations::selectDegree(const QString &title)
@@ -220,12 +250,13 @@ void Expectations::selectDegree(const QString &title)
 
 void Expectations::updateExp()
 {
-    if (expSelect_->currentText() == "Nouvelle prévision")
+    if (expSelect_->currentIndex() == 0)
     {
         exp_ = new Expectation;
         return;
     }
 
+    // Maj de l'exp courant
     Student* student = UVManager::instance().student();
 
     for (int i = 0; i < student->exp().size(); i++)
@@ -237,6 +268,8 @@ void Expectations::updateExp()
 
 void Expectations::updateExpComboBox()
 {
+    expSelect_->clear();
+
     Student* student = UVManager::instance().student();
     if(!student)
         return;
@@ -294,3 +327,14 @@ void Expectations::updateWantedUvs()
 
     wantedUvsLayout_->insertStretch(-1);
 }
+
+void Expectations::validateExp()
+{
+    if (expSelect_->currentIndex() == 0)
+        UVManager::instance().student()->addExp(exp_);
+
+    saveDatas();
+    updateExpComboBox();
+}
+
+
