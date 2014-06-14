@@ -51,11 +51,8 @@ void Degree::setParent(Degree *parent)
 
 void Degree::setQuota(QString category, int quota)
 {
-    if(quota <= 0)
-    {
-        if(quotas_.contains(category))
-            quotas_.remove(category);
-    }
-    else
-        quotas_[category] = quota;
+    if(category.size() == 0)
+        return;
+
+    quotas_[category] = quota;
 }

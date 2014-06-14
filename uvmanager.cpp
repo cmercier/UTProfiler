@@ -20,6 +20,23 @@ UVManager::~UVManager()
     saveStudents();
 }
 
+void UVManager::addDegree(Degree *degree)
+{
+    if(!degree)
+        return;
+
+    for(int i = 0; i < degrees_.size(); i++)
+    {
+        if(degrees_.at(i)->title() == degree->title())
+        {
+            degrees_.replace(i,degree);
+            return;
+        }
+    }
+
+    degrees_.push_back(degree);
+}
+
 void UVManager::addDegree(QDomElement &element, Degree *parent)
 {
     Degree *degree = new Degree;
@@ -27,6 +44,11 @@ void UVManager::addDegree(QDomElement &element, Degree *parent)
     degree->setType(element.attribute("type","formation"));
     addUvs(degree,element);
     addQuotas(degree,element);
+
+    for(QDomElement qElem = element.firstChildElement("quota");!qElem.isNull();qElem = qElem.nextSiblingElement("quota"))
+    {
+        degree->setQuota(qElem.attribute("categorie"),qElem.text().toInt());
+    }
 
     for(QDomElement childElement = element.firstChildElement("item"); !childElement.isNull(); childElement = childElement.nextSiblingElement("item"))
     {
@@ -339,6 +361,10 @@ void UVManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &d
     titleElement.appendChild(dom.createTextNode(degree->title()));
     degreeElement.appendChild(titleElement);
 
+    QDomElement typeElement = dom.createElement("type");
+    typeElement.appendChild(dom.createTextNode(degree->type()));
+    degreeElement.appendChild(typeElement);
+
     const QList<const Uv*> &uvs = degree->uvs();
     for(int i = 0; i < uvs.size(); i++)
     {
@@ -351,9 +377,11 @@ void UVManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &d
     QMapIterator<QString,int> it(quotas);
     while(it.hasNext())
     {
-        it.next();
+        it.next();qDebug() << "it" << it.key();
         QDomElement quotaElement = dom.createElement("quota");
-        quotaElement.setAttribute("categorie",it.key());
+        QDomAttr cat = dom.createAttribute("categorie");
+        cat.setNodeValue(it.key());
+        quotaElement.setAttributeNode(cat);
         quotaElement.appendChild(dom.createTextNode(QString::number(it.value())));
         degreeElement.appendChild(quotaElement);
     }

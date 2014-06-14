@@ -65,6 +65,22 @@ Admin::Admin()
     v3->addWidget(addDegreePanel_);
     mainLayout->addLayout(v3);
 
+    // Edit degree
+    QLabel* editDegreeLabel = new QLabel("Modifier un cursus");
+    editDegree_comboBox_ = new QComboBox;
+    editDegree_comboBox_->setInsertPolicy(QComboBox::InsertAlphabetically);
+    QObject::connect(editDegree_comboBox_,SIGNAL(activated(QString)),this,SLOT(editDegree(QString)));
+    QHBoxLayout* editDegreeLayout = new QHBoxLayout;
+    editDegreeLayout->addWidget(editDegreeLabel);
+    editDegreeLayout->addWidget(editDegree_comboBox_);
+    editDegreeLayout->insertStretch(-1);
+    createEditDegreePanel();
+    editDegreePanel_->setVisible(false);
+    QVBoxLayout* v4 = new QVBoxLayout;
+    v4->addLayout(editDegreeLayout);
+    v4->addWidget(editDegreePanel_);
+    mainLayout->addLayout(v4);
+
     // Remove degree
     QLabel* removeDegreeLabel = new QLabel("Supprimer un cursus :");
     removeDegree_comboBox_ = new QComboBox;
@@ -200,6 +216,7 @@ void Admin::createAddDegreePanel()
         h->addWidget(label);
         h->addWidget(box);
         v1->addLayout(h);
+        addDegree_criteria_.push_back(box);
     }
 
         // Parent degree
@@ -299,6 +316,80 @@ void Admin::createAddUvPanel()
     QObject::connect(submit,SIGNAL(clicked()),this,SLOT(addUv()));
 }
 
+void Admin::createEditDegreePanel()
+{
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    editDegreePanel_ = new QWidget;
+    editDegreePanel_->setLayout(mainLayout);
+    int labelWidth = 40;
+
+    // Name
+    QLabel* nameLabel = new QLabel("Nom : ");
+    nameLabel->setFixedWidth(labelWidth);
+    editDegree_name_ = new QLineEdit;
+    QHBoxLayout* nameLayout = new QHBoxLayout;
+    nameLayout->addWidget(nameLabel);
+    nameLayout->addWidget(editDegree_name_);
+    nameLayout->insertStretch(-1);
+    mainLayout->addLayout(nameLayout);
+
+    QHBoxLayout* h1 = new QHBoxLayout;
+
+    // Add uv
+    QLabel* editDegreeLabel = new QLabel("Uvs :");
+    editDegreeLabel->setFixedWidth(labelWidth);
+    QHBoxLayout* editDegreeLayout = new QHBoxLayout;
+    editDegreeLayout->addWidget(editDegreeLabel);
+    editDegree_scrollArea_ = new QScrollArea;
+    QWidget* saw = new QWidget;
+    editDegree_uvs_layout_ = new QVBoxLayout;
+    saw->setLayout(editDegree_uvs_layout_);
+    editDegree_scrollArea_->setWidgetResizable(true);
+    editDegree_scrollArea_->setFixedWidth(110);
+    editDegree_scrollArea_->setWidget(saw);
+    editDegreeLayout->addWidget(editDegree_scrollArea_);
+    //editDegreeLayout->insertStretch(-1);
+    h1->addLayout(editDegreeLayout);
+
+    // Add criterias
+    QGroupBox* addCriteriaBox = new QGroupBox("Critères");
+    QVBoxLayout* v1 = new QVBoxLayout;
+    addCriteriaBox->setLayout(v1);
+
+    QStringList categories = Uv::categories_;
+    foreach(QString cat,categories)
+    {
+        QLabel* label = new QLabel(cat);
+        label->setFixedWidth(labelWidth);
+        QSpinBox* box = new QSpinBox;
+        box->setMinimum(0);
+        box->setValue(0);
+        QHBoxLayout* h = new QHBoxLayout;
+        h->addWidget(label);
+        h->addWidget(box);
+        v1->addLayout(h);
+        editDegree_criteria_.push_back(box);
+    }
+
+        // Parent degree
+    QLabel* parentDegreeLabel = new QLabel("Inclure la formation dans :");
+    v1->addWidget(parentDegreeLabel);
+    editDegree_parent_ = new QComboBox;
+    editDegree_parent_->setInsertPolicy(QComboBox::InsertAlphabetically);
+    v1->addWidget(editDegree_parent_);
+
+    v1->insertStretch(-1);
+    h1->addWidget(addCriteriaBox);
+    h1->insertStretch(-1);
+
+    mainLayout->addLayout(h1);
+
+    // Submit
+    QPushButton* submit = new QPushButton("Modifier");
+    QObject::connect(submit,SIGNAL(clicked()),this,SLOT(editDegree()));
+    mainLayout->addWidget(submit);
+}
+
 void Admin::createEditUvPanel()
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -375,20 +466,64 @@ void Admin::createEditUvPanel()
     QObject::connect(submit,SIGNAL(clicked()),this,SLOT(editUv()));
 }
 
-void Admin::removeDegree()
+void Admin::editDegree(QString)
 {
-    UVManager::instance().removeDegree(removeDegree_comboBox_->currentText());
-    updateForms();
-    removeDegree_remove_->setVisible(false);
-    QMessageBox::information(this,"","Cursus supprimé.",QMessageBox::Ok);
+    Degree* deg = UVManager::instance().degreeWithTitle(editDegree_comboBox_->currentText());
+    if(deg)
+    {
+        QStringList categories = Uv::categories_;
+        for(int i = 0; i < categories.size(); i++)
+        {
+            editDegree_criteria_[i]->setValue(deg->quota(categories.at(i)));
+        }
+
+        editDegree_name_->setText(deg->title());
+
+        editDegreePanel_->setVisible(true);
+    }
+    else
+        editDegreePanel_->setVisible(false);
 }
 
-void Admin::removeUv()
+void Admin::editDegree()
 {
-    UVManager::instance().removeUv(removeUv_comboBox_->currentText());
-    updateForms();
-    removeUv_remove_->setVisible(false);
-    QMessageBox::information(this,"","Uv supprimée.",QMessageBox::Ok);
+    if(editDegree_name_->text().isEmpty())
+    {
+        QMessageBox::warning(this,"Information manquante","Veuillez indiquer un nom pour la formation.");
+        return;
+    }
+
+   Degree* degree = new Degree;
+   degree->setTitle(editDegree_name_->text());
+   for(int i = 0; i < editDegree_uvsBoxes_.size(); i++)
+   {
+       if(editDegree_uvsBoxes_.at(i)->isChecked())
+            degree->addUv(UVManager::instance().uvFromCode(editDegree_uvsBoxes_.at(i)->text()));
+   }
+
+   if(editDegree_parent_->currentIndex() > 0)
+   {
+       degree->setParent(UVManager::instance().degreeWithTitle(editDegree_parent_->currentText()));
+   }
+
+   QStringList cat = Uv::categories_;
+   for(int i = 0; i < editDegree_criteria_.size(); i++)
+   {
+       degree->setQuota(cat.at(i),editDegree_criteria_.at(i)->value());
+   }
+
+   UVManager::instance().addDegree(degree);
+
+   QMessageBox::information(this,"","Le cursus a été modifié.");
+
+   editDegreePanel_->setVisible(false);
+   updateForms();
+   editDegree_name_->setText("");
+
+   for(int i = 0; i < editDegree_criteria_.size(); i++)
+   {
+       editDegree_criteria_[i]->setValue(0);
+   }
 }
 
 void Admin::editUv()
@@ -434,6 +569,22 @@ void Admin::editUv(QString code)
     showEditUvPanel(true);
 }
 
+void Admin::removeDegree()
+{
+    UVManager::instance().removeDegree(removeDegree_comboBox_->currentText());
+    updateForms();
+    removeDegree_remove_->setVisible(false);
+    QMessageBox::information(this,"","Cursus supprimé.",QMessageBox::Ok);
+}
+
+void Admin::removeUv()
+{
+    UVManager::instance().removeUv(removeUv_comboBox_->currentText());
+    updateForms();
+    removeUv_remove_->setVisible(false);
+    QMessageBox::information(this,"","Uv supprimée.",QMessageBox::Ok);
+}
+
 void Admin::showAddDegreePanel(bool show)
 {
     addDegreePanel_->setVisible(show);
@@ -442,6 +593,11 @@ void Admin::showAddDegreePanel(bool show)
 void Admin::showAddUvPanel(bool show)
 {
     addUvPanel_->setVisible(show);
+}
+
+void Admin::showEditDegreePanel(QString title)
+{
+    editDegreePanel_->setVisible(UVManager::instance().degreeWithTitle(title));
 }
 
 void Admin::showEditUvPanel(bool show)
@@ -473,6 +629,7 @@ void Admin::updateForms()
     removeUv_comboBox_->clear();
     removeDegree_comboBox_->clear();
     Utilities::clearLayout(addDegree_uvs_layout_);
+    Utilities::clearLayout(editDegree_uvs_layout_);
 
     for(int i = 0; i < uvs.size(); i++)
     {
@@ -484,10 +641,17 @@ void Admin::updateForms()
         addDegreeUv->setChecked(false);
         addDegree_uvs_layout_->addWidget(addDegreeUv);
         addDegree_uvsBoxes_.push_back(addDegreeUv);
+
+        QCheckBox* editDegreeUv = new QCheckBox(code);
+        editDegreeUv->setChecked(false);
+        editDegree_uvs_layout_->addWidget(editDegreeUv);
+        editDegree_uvsBoxes_.push_back(editDegreeUv);
     }
 
     editUv_comboBox_->insertItem(0,"Selectionnez une Uv...");
     editUv_comboBox_->setCurrentIndex(0);
+    editDegree_comboBox_->insertItem(0,"Selectionnez un cursus...");
+    editDegree_comboBox_->setCurrentIndex(0);
     removeUv_comboBox_->insertItem(0,"Selectionnez une Uv...");
     removeUv_comboBox_->setCurrentIndex(0);
 
@@ -496,10 +660,15 @@ void Admin::updateForms()
     {
         addDegree_parent_->addItem(degrees.at(i)->title());
         removeDegree_comboBox_->addItem(degrees.at(i)->title());
+        editDegree_parent_->addItem(degrees.at(i)->title());
+        editDegree_comboBox_->addItem(degrees.at(i)->title());
     }
 
     addDegree_parent_->insertItem(0,"Parent...");
     addDegree_parent_->setCurrentIndex(0);
+
+    editDegree_parent_->insertItem(0,"Parent...");
+    editDegree_parent_->setCurrentIndex(0);
 
     removeDegree_comboBox_->insertItem(0,"Selectionner un cursus...");
     removeDegree_comboBox_->setCurrentIndex(0);

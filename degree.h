@@ -2,6 +2,7 @@
 #define DEGREE_H
 #include <QList>
 #include <QString>
+#include <QDebug>
 #include <QMap>
 #include "uv.h"
 

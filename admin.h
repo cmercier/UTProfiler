@@ -31,8 +31,16 @@ public slots:
     void addUv();
 
     /**
+     * @brief editDegree
+     * Edite une uv. Vérifie que les champs soient bien complétés. Affiche un message à l'utilisateur.
+     */
+    void editDegree();
+
+    void editDegree(QString);
+
+    /**
      * @brief editUv
-     * Modifie une uv. Vérifie que les camps soient bien complétés. Affiche un message à l'utilisateur.
+     * Modifie une uv. Vérifie que les champs soient bien complétés. Affiche un message à l'utilisateur.
      */
     void editUv();
 
@@ -71,6 +79,13 @@ public slots:
      * @brief showEditUvPanel
      * Affiche le panneau de modification d'uvs.
      */
+
+    /**
+     * @brief showEditDegreePanel
+     * Affiche le panneau de modification de cursus.
+     */
+    void showEditDegreePanel(QString);
+
     void showEditUvPanel(bool);
 
     /**
@@ -84,6 +99,12 @@ public slots:
      * Affiche le bouton de suppression d'uvs.
      */
     void showRemoveUvButton(QString);
+
+    /**
+     * @brief updateForms
+     * Met à jours les listes déroulantes, en prenant en comptes les ajouts, modifications ou suppression d'uvs et de cursus réalisés.
+     */
+    void updateForms();
 
 private:
     /**
@@ -99,16 +120,16 @@ private:
     void createAddUvPanel();
 
     /**
+     * @brief createEditDegreePanel
+     * Crée le panneau de modification de cursus.
+     */
+    void createEditDegreePanel();
+
+    /**
      * @brief createEditUvPanel
      * Créé le panneau de modification d'uvs.
      */
     void createEditUvPanel();
-
-    /**
-     * @brief updateForms
-     * Met à jours les listes déroulantes, en prenant en comptes les ajouts, modifications ou suppression d'uvs et de cursus réalisés.
-     */
-    void updateForms();
 
     QList<QSpinBox*> addDegree_criteria_;
     QLineEdit* addDegree_name_;
@@ -125,6 +146,14 @@ private:
     QWidget* addUvPanel_;
     QCheckBox* addUv_spring_;
     QLineEdit* addUv_title_;
+    QComboBox* editDegree_comboBox_;
+    QList<QSpinBox*> editDegree_criteria_;
+    QLineEdit* editDegree_name_;
+    QComboBox* editDegree_parent_;
+    QScrollArea* editDegree_scrollArea_;
+    QList<QCheckBox*> editDegree_uvsBoxes_;
+    QVBoxLayout* editDegree_uvs_layout_;
+    QWidget* editDegreePanel_;
     QComboBox* editUv_category_;
     QLineEdit* editUv_code_;
     QComboBox* editUv_comboBox_;

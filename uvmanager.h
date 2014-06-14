@@ -17,7 +17,7 @@
 class UVManager
 {
 public:
-    void addDegree(Degree *degree) {degrees_.push_back(degree);}
+    void addDegree(Degree *degree);
     void addUv(Uv* uv);
     void addStudent(const QString &login);
     void addStudent(Student *student);
