@@ -1,4 +1,5 @@
 #include "uvmanager.h"
+#include <QDebug>
 
 UVManager* UVManager::instance_ = 0;
 UVManager::Handler UVManager::handler_=Handler();
@@ -242,6 +243,7 @@ void UVManager::loadStudents(const QString &studentsFileName)
         }
         addStudent(student);
 
+        // Previsions
         for(QDomElement expElem = studentElement.firstChildElement("prevision"); !expElem.isNull(); expElem = expElem.nextSiblingElement("prevision"))
         {
             Expectation* exp = new Expectation;
@@ -467,6 +469,38 @@ void UVManager::saveStudents()
             eqElem.setAttribute("categorie",it.key());
             eqElem.appendChild(dom.createTextNode(QString::number(it.value())));
             studentElement.appendChild(eqElem);
+        }
+
+        // Previsions
+        for (int i = 0; i < student->exp().size(); i++)
+        {            
+            QDomElement exp = dom.createElement("prevision");
+
+            QDomElement name = dom.createElement("nom");
+            name.appendChild(dom.createTextNode(student->exp().at(i)->name()));
+            exp.appendChild(name);
+
+            for (int j = 0; j < student->exp().at(i)->degrees().size(); j++)
+            {
+                QDomElement degree = dom.createElement("cursus");
+                degree.appendChild(dom.createTextNode(student->exp().at(i)->degrees().at(j)->title()));
+                exp.appendChild(degree);
+            }
+            for (int j = 0; j < student->exp().at(i)->rejectedUvs().size(); j++)
+            {
+                QDomElement rejectedUv = dom.createElement("uvRejete");
+                rejectedUv.appendChild(dom.createTextNode(student->exp().at(i)->rejectedUvs().at(j)->code()));
+                exp.appendChild(rejectedUv);
+            }
+
+            for (int j = 0; j < student->exp().at(i)->requiredUvs().size(); j++)
+            {
+                QDomElement requiredUv = dom.createElement("uvRequise");
+                requiredUv.appendChild(dom.createTextNode(student->exp().at(i)->requiredUvs().at(j)->code()));
+                exp.appendChild(requiredUv);
+            }
+
+            studentElement.appendChild(exp);
         }
 
         students.appendChild(studentElement);

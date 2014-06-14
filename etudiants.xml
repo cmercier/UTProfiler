@@ -27,18 +27,15 @@
     <note>B</note>
    </uv>
   </semestre>
-  <equivalence>
-   <cs>0</cs>
-   <tm>0</tm>
-   <tsh>0</tsh>
-   <sp>0</sp>
-  </equivalence>
+  <equivalence categorie="CS">46</equivalence>
+  <equivalence categorie="SP">6</equivalence>
+  <equivalence categorie="TM">1244</equivalence>
+  <equivalence categorie="TSH">44</equivalence>
   <prevision>
-    <nom>premiere</nom>
-    <cursus>Ingénieur - Tronc Commun</cursus>
-    <cursus>GI</cursus>
-    <uvRejete>NF16</uvRejete>
-    <uvRequise>LO11</uvRequise>
+   <nom>premiere</nom>
+   <cursus>GI</cursus>
+   <uvRejete>LO21</uvRejete>
+   <uvRequise>LO21</uvRequise>
   </prevision>
  </etudiant>
  <etudiant>
@@ -47,33 +44,5 @@
   <nom>Abrantes</nom>
   <cursus>Ingénieur - Tronc Commun</cursus>
   <cursus>GI</cursus>
-  <equivalence>
-   <cs>12</cs>
-   <tm>18</tm>
-   <tsh>8</tsh>
-   <sp>6</sp>
-  </equivalence>
- </etudiant>
- <etudiant>
-  <login>sidelatt</login>
-  <prenom></prenom>
-  <nom></nom>
-  <equivalence>
-   <cs>0</cs>
-   <tm>0</tm>
-   <tsh>0</tsh>
-   <sp>0</sp>
-  </equivalence>
- </etudiant>
- <etudiant>
-  <login>henryghy</login>
-  <prenom>Test</prenom>
-  <nom>Henry</nom>
-  <equivalence>
-   <cs>1</cs>
-   <tm>2</tm>
-   <tsh>3</tsh>
-   <sp>4</sp>
-  </equivalence>
  </etudiant>
 </etudiants>

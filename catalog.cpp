@@ -178,9 +178,9 @@ void Catalog::updateCatalog()
         }
 
         bool valid(false);
-        for(int i = 0; i < categories_.size(); i++)
+        for(int j = 0; j < categories_.size(); j++)
         {
-            if(categories_.at(i)->isChecked() && uv->category() == categories_.at(i)->text())
+            if(categories_.at(j)->isChecked() && uv->category() == categories_.at(j)->text())
             {
                 valid = true;
             }
