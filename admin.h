@@ -4,6 +4,12 @@
 #include "uvmanager.h"
 #include "utilities.h"
 
+/**
+ * @brief The Admin class
+ * L'onglet de gestion des uvs permet au personnel de l'UTC de rajouter, éditer ou supprimer des uvs ou cursus.
+ * Les données sont gérées par l'UVManager, qui sauvegarde le tout à la fermeture de l'application.
+ */
+
 class Admin: public QWidget
 {
     Q_OBJECT
@@ -12,6 +18,10 @@ public:
     Admin();
 
 public slots:
+    /**
+     * @brief addDegree
+     * Ajoute un cursus dans la base. Affiche un message à l'utilisateur.
+     */
     void addDegree();
     void addUv();
     void editUv();
