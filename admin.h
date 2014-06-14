@@ -23,21 +23,91 @@ public slots:
      * Ajoute un cursus dans la base. Affiche un message à l'utilisateur.
      */
     void addDegree();
+
+    /**
+     * @brief addUv
+     *Ajoute une uv dans la base. Affiche un message à l'utilisateur.
+     */
     void addUv();
+
+    /**
+     * @brief editUv
+     * Modifie une uv. Vérifie que les camps soient bien complétés. Affiche un message à l'utilisateur.
+     */
     void editUv();
+
+    /**
+     * @brief editUv
+     * Affiche l'uv que l'on souhaite modifier.
+     */
     void editUv(QString);
+
+    /**
+     * @brief removeDegree
+     * Supprime un cursus de la base. Ne supprime les cursus enfant (qui peuvent être intégrés dans d'autres cursus).
+     * Affiche un message à l'utilisateur.
+     */
     void removeDegree();
+
+    /**
+     * @brief removeUv
+     * Supprime une uv de la base. Affiche un message à l'utilisateur.
+     */
     void removeUv();
+
+    /**
+     * @brief showAddDegreePanel
+     * Affiche la panneau d'ajout de cursus.
+     */
     void showAddDegreePanel(bool);
+
+    /**
+     * @brief showAddUvPanel
+     * Affiche le panneau d'ajout d'uvs.
+     */
     void showAddUvPanel(bool);
+
+    /**
+     * @brief showEditUvPanel
+     * Affiche le panneau de modification d'uvs.
+     */
     void showEditUvPanel(bool);
+
+    /**
+     * @brief showRemoveDegreeButton
+     * Affiche le panneau de suppression de cursus.
+     */
     void showRemoveDegreeButton(QString);
+
+    /**
+     * @brief showRemoveUvButton
+     * Affiche le bouton de suppression d'uvs.
+     */
     void showRemoveUvButton(QString);
 
 private:
+    /**
+     * @brief createAddDegreePanel
+     * Créé le panneau d'ajout de cursus.
+     */
     void createAddDegreePanel();
+
+    /**
+     * @brief createAddUvPanel
+     * Crée le panneau d'ajout d'uvs.
+     */
     void createAddUvPanel();
+
+    /**
+     * @brief createEditUvPanel
+     * Créé le panneau de modification d'uvs.
+     */
     void createEditUvPanel();
+
+    /**
+     * @brief updateForms
+     * Met à jours les listes déroulantes, en prenant en comptes les ajouts, modifications ou suppression d'uvs et de cursus réalisés.
+     */
     void updateForms();
 
     QList<QSpinBox*> addDegree_criteria_;

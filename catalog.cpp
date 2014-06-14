@@ -79,21 +79,6 @@ Catalog::Catalog():
 
     mainLayout->addLayout(l1);
     mainLayout->addWidget(uvsScrollArea_);
-    //mainLayout->addStretch(-1);
-
-    // Edit panel
-    QHBoxLayout* l4 = new QHBoxLayout;
-    QLabel* findLabel = new QLabel("Rechercher : ");
-    l4->addWidget(findLabel);
-    QLineEdit* findLineEdit = new QLineEdit;
-    l4->addWidget(findLineEdit);
-    QPushButton* edit = new QPushButton("Modifier");
-    edit->setCheckable(true);
-    edit->setChecked(false);
-    QObject::connect(edit,SIGNAL(toggled(bool)),this,SLOT(editCatalog(bool)));
-    l4->addStretch();
-    l4->addWidget(edit);
-    mainLayout->addLayout(l4);
 
     // By default show all uvs
     updateCatalog();
@@ -103,13 +88,6 @@ void Catalog::criteriaChanged()
 {
     isCriteriaChange_ = true;
     submit_->setEnabled(true);
-}
-
-void Catalog::editCatalog(bool edit)
-{
-    editCatalog_ = edit;
-    isCriteriaChange_ = true;
-    updateCatalog();
 }
 
 void Catalog::selectDegree(const QString &title)
@@ -156,6 +134,11 @@ void Catalog::selectDegree(const QString &title)
     degreeLayout_->insertStretch(-1);
 }
 
+bool compareByCode(const Uv* a,const Uv* b)
+{
+    return a->code() < b->code();
+}
+
 void Catalog::updateCatalog()
 {
     if(!isCriteriaChange_)
@@ -165,6 +148,7 @@ void Catalog::updateCatalog()
     submit_->setEnabled(false);
 
     QList<const Uv*> uvs;
+    qSort(uvs.begin(),uvs.end(),compareByCode);
     selectedDegree_ ? uvs = selectedDegree_->uvs() : uvs = UVManager::instance().uvs();
 
     int i(0);
