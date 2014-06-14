@@ -67,3 +67,15 @@ void Expectation::deleteDegree(const QString& title)
         }
     }
 }
+
+void Expectation::deleteSemester(const QString& title)
+{
+    for (int i = 0; i < semesters_.size(); i++)
+    {
+        if (semesters_[i]->title() == title)
+        {
+            semesters_.removeAt(i);
+            return;
+        }
+    }
+}

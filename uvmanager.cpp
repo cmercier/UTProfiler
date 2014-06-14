@@ -294,6 +294,18 @@ void UVManager::loadStudents(const QString &studentsFileName)
                 if(uv)
                     exp->addRequiredUv(uv);
             }
+
+            for(QDomElement semesterElement = expElem.firstChildElement("semestre"); !semesterElement.isNull(); semesterElement = semesterElement.nextSiblingElement("semestre"))
+            {
+                Semester *semester = new Semester();
+                semester->setTitle(semesterElement.firstChildElement("titre").text());
+
+                for(QDomElement uvElement = semesterElement.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
+                {
+                    semester->addUv(uvElement.text(), Uv::stringToGrade("Undefined"));
+                }
+                exp->addSemester(semester);
+            }
         }
     }
 
@@ -526,6 +538,28 @@ void UVManager::saveStudents()
                 QDomElement requiredUv = dom.createElement("uvRequise");
                 requiredUv.appendChild(dom.createTextNode(student->exp().at(i)->requiredUvs().at(j)->code()));
                 exp.appendChild(requiredUv);
+            }
+
+            for (int j = 0; j < student->exp().at(i)->semesters().size(); j++)
+            {
+                QDomElement semester = dom.createElement("semestre");
+
+                QDomElement title = dom.createElement("titre");
+                title.appendChild(dom.createTextNode(student->exp().at(i)->semesters().at(j)->title()));
+                semester.appendChild(title);
+
+                // Uvs
+                QMapIterator<QString, Grade> it(student->exp().at(i)->semesters().at(j)->uvs());
+                while (it.hasNext()) {
+                    it.next();
+
+                    QDomElement uv = dom.createElement("uv");
+                    uv.appendChild(dom.createTextNode(it.key()));
+
+                    semester.appendChild(uv);
+                }
+
+                exp.appendChild(semester);
             }
 
             studentElement.appendChild(exp);

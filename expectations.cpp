@@ -35,12 +35,25 @@ Expectations::Expectations():
     w->setLayout(expLayout_);
     mainLayout->addWidget(expScrollArea_);
 
-    // Validation button
-    QPushButton* validate = new QPushButton("Valider");
+    // Save button
+    QPushButton* validate = new QPushButton("Sauvegarder la prévision");
     QObject::connect(validate,SIGNAL(clicked()),this,SLOT(validateExp()));
     mainLayout->addWidget(validate);
 
-    mainLayout->insertStretch(-1);
+    // Generation button
+    QPushButton* generate = new QPushButton("Générer la prévision");
+    QObject::connect(generate,SIGNAL(clicked()),this,SLOT());
+    mainLayout->addWidget(generate);
+
+    // Semestres générés
+    semestersLayout_ = new QVBoxLayout;
+    QWidget* widget = new QWidget;
+    widget->setLayout(semestersLayout_);
+    semestersScrollArea_ = new QScrollArea;
+    semestersScrollArea_->setWidget(widget);
+    semestersScrollArea_->setWidgetResizable(true);
+
+    mainLayout->addWidget(semestersScrollArea_);
 }
 
 void Expectations::addWantedDegree()
@@ -49,6 +62,14 @@ void Expectations::addWantedDegree()
        exp_->addDegree(selectedDegree_);
 
     saveDatas();
+    createExpPanel();
+}
+
+void Expectations::addSemester()
+{
+    Semester* s = new Semester;
+    s->setTitle(seasonBox_->currentText() + yearBox_->text());
+    exp_->addSemester(s);
     createExpPanel();
 }
 
@@ -153,34 +174,63 @@ void Expectations::createExpPanel()
     h4->addWidget(wantedDegrees);
     expLayout_->addLayout(h4);
 
-    /*
+
     // Add semester
     QGroupBox* addSemesterBox = new QGroupBox;
-    QVBoxLayout* v1 = new QVBoxLayout;
-    addSemesterBox->setLayout(v1);
+    QVBoxLayout* v2 = new QVBoxLayout;
+    addSemesterBox->setLayout(v2);
         // semester
     QLabel* seasonLabel = new QLabel("Semestre :");
-    QComboBox* seasonBox = new QComboBox;
-    seasonBox->addItem("Printemps");
-    seasonBox->addItem("Automne");
-    QHBoxLayout* h2 = new QHBoxLayout;
-    h2->addWidget(seasonLabel);
-    h2->addWidget(seasonBox);
+    seasonBox_ = new QComboBox;
+    seasonBox_->addItem("P");
+    seasonBox_->addItem("A");
+    QHBoxLayout* h6 = new QHBoxLayout;
+    h6->addWidget(seasonLabel);
+    h6->addWidget(seasonBox_);
         // date
     QLabel* yearLabel = new QLabel("Année :");
-    QSpinBox* yearBox = new QSpinBox;
-    yearBox->setValue(14);
-    h2->addWidget(yearLabel);
-    h2->addWidget(yearBox);
-    h2->insertStretch(-1);
-    v1->addLayout(h2);
+    yearBox_ = new QSpinBox;
+    yearBox_->setValue(14);
+    // button add
+    QPushButton* addSemester = new QPushButton("Ajouter le semestre");
+    QObject::connect(addSemester,SIGNAL(clicked()),this,SLOT(addSemester()));
+    h6->addWidget(yearLabel);
+    h6->addWidget(yearBox_);
+    h6->addWidget(addSemester);
+    h6->insertStretch(-1);
+
+    v2->addLayout(h6);
+
+    for(int i = 0; i < exp_->semesters().size(); i++)
+    {
+        QLabel* semester = new QLabel(exp_->semesters().at(i)->title());
+        QHBoxLayout* h = new QHBoxLayout;
+        h->addWidget(semester);
+        h->insertStretch(-1);
+        v2->addLayout(h);
+    }
+
+    semestersBox_ = new QComboBox;
+    for(int i = 0; i < exp_->semesters().size(); i++)
+    {
+        semestersBox_->addItem(exp_->semesters().at(i)->title());
+    }
+    QPushButton* deleteSemester = new QPushButton("Supprimer le semestre");
+    QObject::connect(deleteSemester,SIGNAL(clicked()),this,SLOT(deleteSemester()));
+    QHBoxLayout* h7 = new QHBoxLayout;
+    h7->addWidget(semestersBox_);
+    h7->addWidget(deleteSemester);
+    h7->insertStretch(-1);
+    v2->addLayout(h7);
+
 
     expLayout_->addWidget(addSemesterBox);
-    */
+
     expLayout_->insertStretch(-1);
 
     updateWantedUvs();
     updateUnwantedUvs();
+    loadSemesters();
 }
 
 void Expectations::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree)
@@ -214,6 +264,12 @@ void Expectations::deleteExp()
     UVManager::instance().student()->deleteExp(exp_);
     updateExpComboBox();
     updateExp();
+    createExpPanel();
+}
+
+void Expectations::deleteSemester()
+{
+    exp_->deleteSemester(semestersBox_->currentText());
     createExpPanel();
 }
 
@@ -370,6 +426,48 @@ void Expectations::validateExp()
     updateExpComboBox();
     updateExp();
     createExpPanel();
+}
+
+void Expectations::loadSemesters() const
+{
+    Utilities::clearLayout(semestersLayout_);
+    // Create semesters
+    for(int i = 0; i < exp_->semesters().size(); i++)
+    {
+        const Semester* semester = exp_->semesters().at(i);
+        QGroupBox* semesterBox = new QGroupBox(semester->title());
+
+        // Create and populate new uvs layout
+        QHBoxLayout* uvsLayout = new QHBoxLayout;
+        QVBoxLayout* codeCol = new QVBoxLayout;
+        QVBoxLayout* titleCol = new QVBoxLayout;
+        QVBoxLayout* creditsCol = new QVBoxLayout;
+
+        QMapIterator<QString, Grade> it(semester->uvs());
+        while (it.hasNext()) {
+            it.next();
+
+            const Uv* uv = UVManager::instance().uvFromCode(it.key()) ;
+
+            QLabel* code = new QLabel(uv->code());
+            code->setFixedWidth(50);
+            codeCol->addWidget(code);
+            QLabel* title = new QLabel(uv->title());
+            titleCol->addWidget(title);
+            QLabel* credits = new QLabel(QString::number(uv->credits()));
+            credits->setFixedWidth(50);
+            creditsCol->addWidget(credits);
+        }
+
+        // Refresh uvs layout
+        uvsLayout->addLayout(codeCol);
+        uvsLayout->addLayout(titleCol);
+        uvsLayout->addLayout(creditsCol);
+        semesterBox->setLayout(uvsLayout);
+
+        semestersLayout_->addWidget(semesterBox);
+    }
+    semestersLayout_->insertStretch(-1);
 }
 
 
