@@ -79,3 +79,8 @@ void Expectation::deleteSemester(const QString& title)
         }
     }
 }
+
+void Expectation::setSemesters(QList<Semester*> semesters)
+{
+    semesters_ = semesters;
+}

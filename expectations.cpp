@@ -42,7 +42,7 @@ Expectations::Expectations():
 
     // Generation button
     QPushButton* generate = new QPushButton("Générer la prévision");
-    QObject::connect(generate,SIGNAL(clicked()),this,SLOT());
+    QObject::connect(generate,SIGNAL(clicked()),this,SLOT(generateExp()));
     mainLayout->addWidget(generate);
 
     // Semestres générés
@@ -271,6 +271,14 @@ void Expectations::deleteSemester()
 {
     exp_->deleteSemester(semestersBox_->currentText());
     createExpPanel();
+}
+
+void Expectations::generateExp()
+{
+    setStrategy(new Algo(UTManager::instance().student(), exp_));
+    exp_->setSemesters(autocompletion_->run());
+    createExpPanel();
+
 }
 
 void Expectations::saveDatas()

@@ -1,4 +1,4 @@
-#ifndef STRATEGY_H
+    #ifndef STRATEGY_H
 #define STRATEGY_H
 #include "student.h"
 #include "expectation.h"

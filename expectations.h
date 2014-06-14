@@ -4,6 +4,7 @@
 #include "uvmanager.h"
 #include "utilities.h"
 #include "student.h"
+#include "algo.h"
 
 class Expectations: public QWidget
 {
@@ -11,6 +12,7 @@ class Expectations: public QWidget
 
 public:
     Expectations();
+    void setStrategy(Strategy* strategy) { autocompletion_ = strategy; }
 
 public slots:
     void addWantedDegree();
@@ -19,6 +21,7 @@ public slots:
     void deleteDegree();
     void deleteExp();
     void deleteSemester();
+    void generateExp();
     void saveDatas();
     void selectDegree(const QString &);
     void updateExp();
@@ -31,6 +34,7 @@ public slots:
 private:
     void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);
     void loadSemesters() const;
+
 
     Expectation* exp_;
     QHBoxLayout* degreeLayout_;
@@ -45,6 +49,7 @@ private:
     QComboBox* semestersBox_;
     QVBoxLayout* semestersLayout_;
     QScrollArea* semestersScrollArea_;
+    Strategy* autocompletion_;
     QVBoxLayout* unwantedUvsLayout_;
     QVBoxLayout* wantedUvsLayout_;
     QSpinBox* yearBox_;

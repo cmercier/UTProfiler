@@ -21,6 +21,7 @@ public:
     void deleteSemester(const QString& title);
     const QString & name() const {return name_;}
     void setName(const QString &name) {name_ = name;}
+    void setSemesters(QList<Semester*> semesters);
     const QList<const Uv*>& rejectedUvs() const {return rejectedUvs_;}
     const QList<const Uv*>& requiredUvs() const {return requiredUvs_;}
     const QList<Semester*>& semesters() const {return semesters_;}

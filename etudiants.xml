@@ -27,15 +27,63 @@
     <note>B</note>
    </uv>
   </semestre>
-  <equivalence categorie="CS">46</equivalence>
+  <equivalence categorie="CS">2</equivalence>
   <equivalence categorie="SP">6</equivalence>
-  <equivalence categorie="TM">1244</equivalence>
-  <equivalence categorie="TSH">44</equivalence>
+  <equivalence categorie="TM">0</equivalence>
+  <equivalence categorie="TSH">4</equivalence>
   <prevision>
    <nom>premiere</nom>
-   <cursus>GI</cursus>
+   <cursus>Ingénieur - Tronc Commun</cursus>
+   <uvRejete>BL01</uvRejete>
    <uvRejete>LO21</uvRejete>
    <uvRequise>LO21</uvRequise>
+   <semestre>
+    <titre>P14</titre>
+    <uv>BL01</uv>
+    <uv>BL10</uv>
+    <uv>BL22</uv>
+    <uv>CM01</uv>
+    <uv>CM11</uv>
+    <uv>LO21</uv>
+   </semestre>
+  </prevision>
+  <prevision>
+   <nom>seconde</nom>
+   <cursus>Ingénieur - Tronc Commun</cursus>
+   <cursus>Ingénieur - Branche</cursus>
+   <uvRejete>BL01</uvRejete>
+   <uvRejete>BL10</uvRejete>
+   <uvRejete>CM01</uvRejete>
+   <uvRejete>CM11</uvRejete>
+   <uvRejete>CM12</uvRejete>
+   <uvRequise>CM11</uvRequise>
+   <semestre>
+    <titre>P14</titre>
+    <uv>BL01</uv>
+    <uv>BL10</uv>
+    <uv>BL22</uv>
+    <uv>CM01</uv>
+    <uv>CM11</uv>
+    <uv>CM12</uv>
+   </semestre>
+   <semestre>
+    <titre>A14</titre>
+    <uv>CM13</uv>
+    <uv>CM15</uv>
+    <uv>EL01</uv>
+    <uv>EN21</uv>
+    <uv>IA02</uv>
+    <uv>MQ01</uv>
+   </semestre>
+   <semestre>
+    <titre>A15</titre>
+    <uv>BL01</uv>
+    <uv>BL10</uv>
+    <uv>BL22</uv>
+    <uv>CM01</uv>
+    <uv>CM11</uv>
+    <uv>CM12</uv>
+   </semestre>
   </prevision>
  </etudiant>
  <etudiant>
