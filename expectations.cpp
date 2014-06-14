@@ -13,7 +13,8 @@ Expectations::Expectations()
     expSelect_ = new QComboBox;
     expSelect_->setInsertPolicy(QComboBox::InsertAlphabetically);
     expSelect_->setFixedWidth(150);
-    //QObject::connect(expSelect_,SIGNAL(activated(QString)),this,SLOT());
+    QObject::connect(expSelect_,SIGNAL(activated(QString)),this,SLOT(updateExp()));
+    QObject::connect(expSelect_,SIGNAL(activated(QString)),this,SLOT(createExpPanel()));
 
     QHBoxLayout* h1 = new QHBoxLayout;
     h1->addWidget(expSelectLabel);
@@ -30,12 +31,18 @@ Expectations::Expectations()
     w->setLayout(expLayout_);
     mainLayout->addWidget(expScrollArea_);
 
+    // Validation button
+    QPushButton* validate = new QPushButton("Valider");
+    QObject::connect(validate,SIGNAL(clicked()),this,SLOT(saveDatas()));
+    mainLayout->addWidget(validate);
+
     mainLayout->insertStretch(-1);
 }
 
 void Expectations::addWantedDegree()
 {
-
+    exp_->addDegree(selectedDegree_);
+    createExpPanel();
 }
 
 void Expectations::createExpPanel()
@@ -44,7 +51,7 @@ void Expectations::createExpPanel()
 
     // Name
     QLabel* nameLabel = new QLabel("Nom :");
-    name_ = new QLineEdit;
+    name_ = new QLineEdit(exp_->name());
     QHBoxLayout* h1 = new QHBoxLayout;
     h1->addWidget(nameLabel);
     h1->addWidget(name_);
@@ -104,9 +111,9 @@ void Expectations::createExpPanel()
     v1->addLayout(degreeLayout_);
     v1->addLayout(h5);
     wantedDegrees->setLayout(v1);
-    /*for(int i = 0; i < currentExp_->degrees().size(); i++)
+    for(int i = 0; i < exp_->degrees().size(); i++)
     {
-        const Degree* degree = currentExp_->degrees()[i];
+        const Degree* degree = exp_->degrees()[i];
 
         QHBoxLayout* degreesLayout = new QHBoxLayout;
 
@@ -116,7 +123,7 @@ void Expectations::createExpPanel()
 
         v1->addLayout(degreesLayout);
 
-    }*/
+    }
     v1->insertStretch(-1);
 
     QHBoxLayout* h4 = new QHBoxLayout;
@@ -173,6 +180,12 @@ void Expectations::getParentDegree(QHBoxLayout* degreeLayout, const Degree* degr
     degreeLayout->addWidget(degreeTitleLabel);
 }
 
+void Expectations::saveDatas()
+{
+    if (expSelect_->currentText() == "Nouvelle prévision")
+        UVManager::instance().addExp
+}
+
 void Expectations::selectDegree(const QString &title)
 {
     selectedDegree_ = UVManager::instance().degreeWithTitle(title);
@@ -203,6 +216,23 @@ void Expectations::selectDegree(const QString &title)
     }
 
     degreeLayout_->insertStretch(-1);
+}
+
+void Expectations::updateExp()
+{
+    if (expSelect_->currentText() == "Nouvelle prévision")
+    {
+        exp_ = new Expectation;
+        return;
+    }
+
+    Student* student = UVManager::instance().student();
+
+    for (int i = 0; i < student->exp().size(); i++)
+    {
+        if (expSelect_->currentText() == student->exp().at(i)->name())
+            exp_ = student->exp().at(i);
+    }
 }
 
 void Expectations::updateExpComboBox()
@@ -236,7 +266,10 @@ void Expectations::updateUnwantedUvs()
     {
         QString code = uvs.at(i)->code();
         QCheckBox* uv = new QCheckBox(code);
-        uv->setChecked(false);
+        if (exp_->rejectedUvs().contains(uvs.at(i)))
+            uv->setChecked(true);
+        else
+            uv->setChecked(false);
         unwantedUvsLayout_->addWidget(uv);
     }
 
@@ -252,7 +285,10 @@ void Expectations::updateWantedUvs()
     {
         QString code = uvs.at(i)->code();
         QCheckBox* uv = new QCheckBox(code);
-        uv->setChecked(false);
+        if (exp_->requiredUvs().contains(uvs.at(i)))
+            uv->setChecked(true);
+        else
+            uv->setChecked(false);
         wantedUvsLayout_->addWidget(uv);
     }
 

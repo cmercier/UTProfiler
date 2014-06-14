@@ -14,14 +14,16 @@ public:
 
 public slots:
     void addWantedDegree();
+    void createExpPanel();
+    void saveDatas();
     void selectDegree(const QString &);
+    void updateExp();
     void updateExpComboBox();
     void updateExpPanel();
     void updateUnwantedUvs();
     void updateWantedUvs();
 
 private:
-    void createExpPanel();
     void getParentDegree(QHBoxLayout* degreeLayout, const Degree* degree);
 
     Expectation* exp_;
