@@ -38,11 +38,11 @@ void Connection::login()
         QMessageBox::warning(this,"Login non valide","Veuillez entrer votre login à 8 lettres.",QMessageBox::Ok);
     else
     {
-        if(UVManager::instance().connect(id))
+        if(UTManager::instance().connect(id))
             QMessageBox::information(this,"Connexion réussie","Vous êtes connecté(e).\nVous pouvez consulter et modifier votre profil et vos prévisions.");
         else
         {
-            UVManager::instance().addStudent(id);
+            UTManager::instance().addStudent(id);
             QMessageBox::information(this,"Bienvenue","Vous avez été ajouté(e) à la base.\nVous pouvez compléter votre profil et réaliser des prévisions.");
         }
 

@@ -61,26 +61,26 @@ void Curriculum::addUV()
     if (semester_->text().isEmpty() || code_->currentIndex() == 0 || grade_->currentIndex() == 0)
         return;
 
-    UVManager::instance().student()->addUV(code_->currentText(), semester_->text(), Uv::stringToGrade(grade_->currentText()));
+    UTManager::instance().student()->addUV(code_->currentText(), semester_->text(), Uv::stringToGrade(grade_->currentText()));
     updateStudent();
 
 }
 
 void Curriculum::addDegree()
 {
-    UVManager::instance().student()->addDegree(selectedDegree_);
+    UTManager::instance().student()->addDegree(selectedDegree_);
     updateStudent();
 }
 
 void Curriculum::deleteDegree()
 {
-    UVManager::instance().student()->deleteDegree(deleteDegree_->currentText());
+    UTManager::instance().student()->deleteDegree(deleteDegree_->currentText());
     updateStudent();
 }
 
 void Curriculum::deleteUV()
 {
-    UVManager::instance().student()->deleteUV(deleteUVCodeUV_->currentText(), deleteUVSemester_->currentText());
+    UTManager::instance().student()->deleteUV(deleteUVCodeUV_->currentText(), deleteUVSemester_->currentText());
     updateStudent();
 }
 
@@ -98,7 +98,7 @@ void Curriculum::selectDegree(const QString &title)
      * and the user selects Tronc Commun instead
      * GI and SRI will be removed and the new state will be : Tronc Commun
      */
-    selectedDegree_ = UVManager::instance().degreeWithTitle(title);
+    selectedDegree_ = UTManager::instance().degreeWithTitle(title);
     int depth;
     selectedDegree_ ? depth = selectedDegree_->depth() : depth = 0;
     while(newDegreeLayout_->count() > depth + 2)
@@ -116,7 +116,7 @@ void Curriculum::selectDegree(const QString &title)
      * A new combo box will show with the options :
      * PCB, SRI, ...
      */
-    QList<const Degree*> children = UVManager::instance().degreesWithParent(title);
+    QList<const Degree*> children = UTManager::instance().degreesWithParent(title);
     if(!children.isEmpty())
     {
         QComboBox* subDegree = new QComboBox;
@@ -144,7 +144,7 @@ void Curriculum::updateUvs()
     deleteUVCodeUV_->clear();
     deleteUVCodeUV_->insertItem(0, "Choix de l'UV");
 
-    Student* student = UVManager::instance().student();
+    Student* student = UTManager::instance().student();
 
     for(int i = 0; i < student->semesters().size(); i++)
     {
@@ -197,7 +197,7 @@ void Curriculum::loadSemesters(const Student* student) const
         while (it.hasNext()) {
             it.next();
 
-            const Uv* uv = UVManager::instance().uvFromCode(it.key()) ;
+            const Uv* uv = UTManager::instance().uvFromCode(it.key()) ;
 
             QLabel* code = new QLabel(uv->code());
             code->setFixedWidth(50);
@@ -230,7 +230,7 @@ void Curriculum::loadSemesters(const Student* student) const
 
 void Curriculum::saveQLineEdit()
 {
-    Student* student = UVManager::instance().student();
+    Student* student = UTManager::instance().student();
     // Sauvegarde des champs dans l'objet Student
     QStringList cat = Uv::categories_;
     for(int i = 0; i < equivalences_.size(); i++)
@@ -258,7 +258,7 @@ void Curriculum::generationView()
     Utilities::clearLayout(uvLayout_);
     Utilities::clearLayout(deleteUvLayout_);
 
-    Student* student = UVManager::instance().student();
+    Student* student = UTManager::instance().student();
 
     // Student
     QLabel* studentLabel = new QLabel("Etudiant (login) : ");
@@ -318,7 +318,7 @@ void Curriculum::generationView()
     if (editStudent_)
     {
         selectedDegree_ = 0;
-        const QList<Degree*> &degrees = UVManager::instance().degrees();
+        const QList<Degree*> &degrees = UTManager::instance().degrees();
 
         degree_ = new QComboBox;
         QObject::connect(degree_,SIGNAL(activated(QString)),this,SLOT(selectDegree(QString)));
@@ -394,7 +394,7 @@ void Curriculum::generationView()
         code_ = new QComboBox;
         code_->insertItem(0, "Choix de l'UV");
         QList<const Uv*> uvs;
-        uvs = UVManager::instance().uvs();
+        uvs = UTManager::instance().uvs();
         for (int i = 0; i < uvs.size(); i++)
         {
             code_->insertItem(i + 1, uvs[i]->code());

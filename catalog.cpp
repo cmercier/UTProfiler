@@ -13,7 +13,7 @@ Catalog::Catalog():
     // Degree
     QLabel* degreeLabel = new QLabel("Formation : ");
     degree_ = new QComboBox;
-    const QList<Degree*> &degrees = UVManager::instance().degrees();
+    const QList<Degree*> &degrees = UTManager::instance().degrees();
     degree_->insertItem(0,"Choix " + degrees.first()->type());
     int count = 1;
     for(int i = 0; i < degrees.size(); i++)
@@ -98,7 +98,7 @@ void Catalog::selectDegree(const QString &title)
      * and the user selects Tronc Commun instead
      * GI and SRI will be removed and the new state will be : Tronc Commun
      */
-    selectedDegree_ = UVManager::instance().degreeWithTitle(title);
+    selectedDegree_ = UTManager::instance().degreeWithTitle(title);
     int depth;
     selectedDegree_ ? depth = selectedDegree_->depth() : depth = 0;
     while(degreeLayout_->count() > depth + 2)
@@ -116,7 +116,7 @@ void Catalog::selectDegree(const QString &title)
      * A new combo box will show with the options :
      * PCB, SRI, ...
      */
-    QList<const Degree*> children = UVManager::instance().degreesWithParent(title);
+    QList<const Degree*> children = UTManager::instance().degreesWithParent(title);
     if(!children.isEmpty())
     {
         QComboBox* subDegree = new QComboBox;
@@ -149,7 +149,7 @@ void Catalog::updateCatalog()
 
     QList<const Uv*> uvs;
     qSort(uvs.begin(),uvs.end(),compareByCode);
-    selectedDegree_ ? uvs = selectedDegree_->uvs() : uvs = UVManager::instance().uvs();
+    selectedDegree_ ? uvs = selectedDegree_->uvs() : uvs = UTManager::instance().uvs();
 
     int i(0);
     while(i < uvs.size())

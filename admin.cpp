@@ -113,12 +113,12 @@ void Admin::addDegree()
    for(int i = 0; i < addDegree_uvsBoxes_.size(); i++)
    {
        if(addDegree_uvsBoxes_.at(i)->isChecked())
-            degree->addUv(UVManager::instance().uvFromCode(addDegree_uvsBoxes_.at(i)->text()));
+            degree->addUv(UTManager::instance().uvFromCode(addDegree_uvsBoxes_.at(i)->text()));
    }
 
    if(addDegree_parent_->currentIndex() > 0)
    {
-       degree->setParent(UVManager::instance().degreeWithTitle(addDegree_parent_->currentText()));
+       degree->setParent(UTManager::instance().degreeWithTitle(addDegree_parent_->currentText()));
    }
 
    for(int i = 0; i < addDegree_criteria_.size(); i++)
@@ -126,7 +126,7 @@ void Admin::addDegree()
        degree->setQuota(addDegree_criteria_.at(i)->text(),addDegree_criteria_.at(i)->value());
    }
 
-   UVManager::instance().addDegree(degree);
+   UTManager::instance().addDegree(degree);
 
    QMessageBox::information(this,"","Le cursus a été ajouté.");
 
@@ -157,7 +157,7 @@ void Admin::addUv()
         uv->setFall(addUv_fall_->isChecked());
         uv->setSpring(addUv_spring_->isChecked());
         uv->setTitle(addUv_title_->text());
-        UVManager::instance().addUv(uv);
+        UTManager::instance().addUv(uv);
 
         showAddUvPanel(false);
         QMessageBox::information(this,"","Uv ajoutée.",QMessageBox::Ok);
@@ -468,7 +468,7 @@ void Admin::createEditUvPanel()
 
 void Admin::editDegree(QString)
 {
-    Degree* deg = UVManager::instance().degreeWithTitle(editDegree_comboBox_->currentText());
+    Degree* deg = UTManager::instance().degreeWithTitle(editDegree_comboBox_->currentText());
     if(deg)
     {
         QStringList categories = Uv::categories_;
@@ -498,12 +498,12 @@ void Admin::editDegree()
    for(int i = 0; i < editDegree_uvsBoxes_.size(); i++)
    {
        if(editDegree_uvsBoxes_.at(i)->isChecked())
-            degree->addUv(UVManager::instance().uvFromCode(editDegree_uvsBoxes_.at(i)->text()));
+            degree->addUv(UTManager::instance().uvFromCode(editDegree_uvsBoxes_.at(i)->text()));
    }
 
    if(editDegree_parent_->currentIndex() > 0)
    {
-       degree->setParent(UVManager::instance().degreeWithTitle(editDegree_parent_->currentText()));
+       degree->setParent(UTManager::instance().degreeWithTitle(editDegree_parent_->currentText()));
    }
 
    QStringList cat = Uv::categories_;
@@ -512,7 +512,7 @@ void Admin::editDegree()
        degree->setQuota(cat.at(i),editDegree_criteria_.at(i)->value());
    }
 
-   UVManager::instance().addDegree(degree);
+   UTManager::instance().addDegree(degree);
 
    QMessageBox::information(this,"","Le cursus a été modifié.");
 
@@ -543,7 +543,7 @@ void Admin::editUv()
         uv->setFall(editUv_fall_->isChecked());
         uv->setSpring(editUv_spring_->isChecked());
         uv->setTitle(editUv_title_->text());
-        UVManager::instance().addUv(uv);
+        UTManager::instance().addUv(uv);
 
         showEditUvPanel(false);
         QMessageBox::information(this,"","Uv modifiée.",QMessageBox::Ok);
@@ -552,7 +552,7 @@ void Admin::editUv()
 
 void Admin::editUv(QString code)
 {
-    editUv_uv_ = UVManager::instance().uvFromCode(code);
+    editUv_uv_ = UTManager::instance().uvFromCode(code);
     if(!editUv_uv_)
     {
         showEditUvPanel(false);
@@ -571,7 +571,7 @@ void Admin::editUv(QString code)
 
 void Admin::removeDegree()
 {
-    UVManager::instance().removeDegree(removeDegree_comboBox_->currentText());
+    UTManager::instance().removeDegree(removeDegree_comboBox_->currentText());
     updateForms();
     removeDegree_remove_->setVisible(false);
     QMessageBox::information(this,"","Cursus supprimé.",QMessageBox::Ok);
@@ -579,7 +579,7 @@ void Admin::removeDegree()
 
 void Admin::removeUv()
 {
-    UVManager::instance().removeUv(removeUv_comboBox_->currentText());
+    UTManager::instance().removeUv(removeUv_comboBox_->currentText());
     updateForms();
     removeUv_remove_->setVisible(false);
     QMessageBox::information(this,"","Uv supprimée.",QMessageBox::Ok);
@@ -597,7 +597,7 @@ void Admin::showAddUvPanel(bool show)
 
 void Admin::showEditDegreePanel(QString title)
 {
-    editDegreePanel_->setVisible(UVManager::instance().degreeWithTitle(title));
+    editDegreePanel_->setVisible(UTManager::instance().degreeWithTitle(title));
 }
 
 void Admin::showEditUvPanel(bool show)
@@ -607,7 +607,7 @@ void Admin::showEditUvPanel(bool show)
 
 void Admin::showRemoveDegreeButton(QString title)
 {
-    if(UVManager::instance().degreeWithTitle(title))
+    if(UTManager::instance().degreeWithTitle(title))
         removeDegree_remove_->setVisible(true);
     else
         removeDegree_remove_->setVisible(false);
@@ -615,7 +615,7 @@ void Admin::showRemoveDegreeButton(QString title)
 
 void Admin::showRemoveUvButton(QString code)
 {
-    if(UVManager::instance().uvFromCode(code))
+    if(UTManager::instance().uvFromCode(code))
         removeUv_remove_->setVisible(true);
     else
         removeUv_remove_->setVisible(false);
@@ -623,7 +623,7 @@ void Admin::showRemoveUvButton(QString code)
 
 void Admin::updateForms()
 {
-    QList<const Uv*> uvs = UVManager::instance().uvs();
+    QList<const Uv*> uvs = UTManager::instance().uvs();
 
     editUv_comboBox_->clear();
     removeUv_comboBox_->clear();
@@ -655,7 +655,7 @@ void Admin::updateForms()
     removeUv_comboBox_->insertItem(0,"Selectionnez une Uv...");
     removeUv_comboBox_->setCurrentIndex(0);
 
-    const QList<Degree*> &degrees = UVManager::instance().degrees();
+    const QList<Degree*> &degrees = UTManager::instance().degrees();
     for(int i = 0; i < degrees.size(); i++)
     {
         addDegree_parent_->addItem(degrees.at(i)->title());

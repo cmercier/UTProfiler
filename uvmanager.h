@@ -8,13 +8,13 @@
 #include "student.h"
 
 /**
- * @brief The UVManager class
+ * @brief The UTManager class
  * Cette classe singleton gère le chargement et la sauvegarde des données.
  * Elle contient donc tous les objets (uv,student,degree) qui portent l'information pendant l'exécution du programme.
  * Les attributs *filePath_ indique le chemin relatif pour le chargement des fichiers xml.
  */
 
-class UVManager
+class UTManager
 {
 public:
     void addDegree(Degree *degree);
@@ -48,7 +48,7 @@ public:
      * Renvoie la liste des cursus ayant pour parent celui portant le titre passé en paramètre.
      */
     QList<const Degree*> degreesWithParent(const QString &parentTitle);
-    static UVManager& instance();
+    static UTManager& instance();
 
     /**
      * @brief load
@@ -78,10 +78,10 @@ public:
     QList<const Uv*> uvsFromCode(const QStringList &codes) const;
 
 private:
-    UVManager();
-    ~UVManager();
-    UVManager(const UVManager& um);
-    UVManager& operator=(const UVManager& um);
+    UTManager();
+    ~UTManager();
+    UTManager(const UTManager& um);
+    UTManager& operator=(const UTManager& um);
     /**
      * @brief addDegree
      * @param element
@@ -189,7 +189,7 @@ private:
     friend struct Handler;
     struct Handler
     {
-        UVManager* instance_;
+        UTManager* instance_;
         Handler():instance_(0){}
         ~Handler()
         {
@@ -201,7 +201,7 @@ private:
     static Handler handler_;
 
     QString categoriesFilePath_;
-    static UVManager* instance_;
+    static UTManager* instance_;
     QList<Degree*> degrees_;
     QString degreesFilePath_;
     Student* student_;

@@ -115,7 +115,7 @@ void Expectations::createExpPanel()
     // Degrees the students wishes to enroll in
     QGroupBox* wantedDegrees = new QGroupBox("Formations envisagées");
     degreesBox_ = new QComboBox;
-    const QList<Degree*> &degrees = UVManager::instance().degrees();
+    const QList<Degree*> &degrees = UTManager::instance().degrees();
     degreesBox_->insertItem(0,"Choix " + degrees.first()->type());
     int count = 1;
     for(int i = 0; i < degrees.size(); i++)
@@ -261,7 +261,7 @@ void Expectations::deleteExp()
     if (expSelect_->currentIndex() == 0)
         return;
 
-    UVManager::instance().student()->deleteExp(exp_);
+    UTManager::instance().student()->deleteExp(exp_);
     updateExpComboBox();
     updateExp();
     createExpPanel();
@@ -286,7 +286,7 @@ void Expectations::saveDatas()
         QCheckBox* cb = dynamic_cast<QCheckBox*>(unwantedUvsLayout_->itemAt(i)->widget());
         if (cb->isChecked())
         {
-            const Uv *uv = UVManager::instance().uvFromCode(cb->text());
+            const Uv *uv = UTManager::instance().uvFromCode(cb->text());
             if(uv)
                 exp_->addRejectedUv(uv);
         }
@@ -298,7 +298,7 @@ void Expectations::saveDatas()
         QCheckBox* cb = dynamic_cast<QCheckBox*>(wantedUvsLayout_->itemAt(i)->widget());
         if (cb->isChecked())
         {
-            const Uv *uv = UVManager::instance().uvFromCode(cb->text());
+            const Uv *uv = UTManager::instance().uvFromCode(cb->text());
             if(uv)
                 exp_->addRequiredUv(uv);
         }
@@ -307,7 +307,7 @@ void Expectations::saveDatas()
 
 void Expectations::selectDegree(const QString &title)
 {
-    selectedDegree_ = UVManager::instance().degreeWithTitle(title);
+    selectedDegree_ = UTManager::instance().degreeWithTitle(title);
     int depth;
     selectedDegree_ ? depth = selectedDegree_->depth() : depth = 0;
     while(degreeLayout_->count() > depth + 2)
@@ -319,7 +319,7 @@ void Expectations::selectDegree(const QString &title)
     }
     degreeLayout_->update();
 
-    QList<const Degree*> children = UVManager::instance().degreesWithParent(title);
+    QList<const Degree*> children = UTManager::instance().degreesWithParent(title);
     if(!children.isEmpty())
     {
         QComboBox* subDegree = new QComboBox;
@@ -346,7 +346,7 @@ void Expectations::updateExp()
     }
 
     // Maj de l'exp courant
-    Student* student = UVManager::instance().student();
+    Student* student = UTManager::instance().student();
 
     for (int i = 0; i < student->exp().size(); i++)
     {
@@ -359,7 +359,7 @@ void Expectations::updateExpComboBox()
 {
     expSelect_->clear();
 
-    Student* student = UVManager::instance().student();
+    Student* student = UTManager::instance().student();
     if(!student)
         return;
 
@@ -381,7 +381,7 @@ void Expectations::updateExpPanel()
 
 void Expectations::updateUnwantedUvs()
 {
-    QList<const Uv*> uvs = UVManager::instance().uvs();
+    QList<const Uv*> uvs = UTManager::instance().uvs();
     Utilities::clearLayout(unwantedUvsLayout_);
 
     for(int i = 0; i < uvs.size(); i++)
@@ -400,7 +400,7 @@ void Expectations::updateUnwantedUvs()
 
 void Expectations::updateWantedUvs()
 {
-    QList<const Uv*> uvs = UVManager::instance().uvs();
+    QList<const Uv*> uvs = UTManager::instance().uvs();
     Utilities::clearLayout(wantedUvsLayout_);
 
     for(int i = 0; i < uvs.size(); i++)
@@ -420,7 +420,7 @@ void Expectations::updateWantedUvs()
 void Expectations::validateExp()
 {
     if (expSelect_->currentIndex() == 0)
-        UVManager::instance().student()->addExp(exp_);
+        UTManager::instance().student()->addExp(exp_);
 
     saveDatas();
     updateExpComboBox();
@@ -447,7 +447,7 @@ void Expectations::loadSemesters() const
         while (it.hasNext()) {
             it.next();
 
-            const Uv* uv = UVManager::instance().uvFromCode(it.key()) ;
+            const Uv* uv = UTManager::instance().uvFromCode(it.key()) ;
 
             QLabel* code = new QLabel(uv->code());
             code->setFixedWidth(50);

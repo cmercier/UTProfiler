@@ -2,7 +2,7 @@
 
 MainWindow::MainWindow()
 {
-    UVManager::instance().load();
+    UTManager::instance().load();
     createStackedWidget();
 }
 

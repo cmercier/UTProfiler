@@ -1,10 +1,10 @@
 #include "uvmanager.h"
 #include <QDebug>
 
-UVManager* UVManager::instance_ = 0;
-UVManager::Handler UVManager::handler_=Handler();
+UTManager* UTManager::instance_ = 0;
+UTManager::Handler UTManager::handler_=Handler();
 
-UVManager::UVManager():
+UTManager::UTManager():
     categoriesFilePath_("categories.xml"),
     degreesFilePath_("formations.xml"),
     student_(0),
@@ -13,14 +13,14 @@ UVManager::UVManager():
 {
 }
 
-UVManager::~UVManager()
+UTManager::~UTManager()
 {
     saveDegrees();
     saveUvs();
     saveStudents();
 }
 
-void UVManager::addDegree(Degree *degree)
+void UTManager::addDegree(Degree *degree)
 {
     if(!degree)
         return;
@@ -37,7 +37,7 @@ void UVManager::addDegree(Degree *degree)
     degrees_.push_back(degree);
 }
 
-void UVManager::addDegree(QDomElement &element, Degree *parent)
+void UTManager::addDegree(QDomElement &element, Degree *parent)
 {
     Degree *degree = new Degree;
     degree->setTitle(element.firstChildElement("titre").text());
@@ -59,7 +59,7 @@ void UVManager::addDegree(QDomElement &element, Degree *parent)
     degrees_.push_back(degree);
 }
 
-void UVManager::addDegrees(Student *student, QDomElement &element)
+void UTManager::addDegrees(Student *student, QDomElement &element)
 {
     for(QDomElement degreeElement = element.firstChildElement("cursus"); !degreeElement.isNull(); degreeElement = degreeElement.nextSiblingElement("cursus"))
     {
@@ -69,7 +69,7 @@ void UVManager::addDegrees(Student *student, QDomElement &element)
     }
 }
 
-void UVManager::addSemesters(Student *student, QDomElement &element)
+void UTManager::addSemesters(Student *student, QDomElement &element)
 {
     for(QDomElement semesterElement = element.firstChildElement("semestre"); !semesterElement.isNull(); semesterElement = semesterElement.nextSiblingElement("semestre"))
     {
@@ -80,7 +80,7 @@ void UVManager::addSemesters(Student *student, QDomElement &element)
     }
 }
 
-void UVManager::addUv(Uv *uv)
+void UTManager::addUv(Uv *uv)
 {
     if(!uv)
         return;
@@ -97,7 +97,7 @@ void UVManager::addUv(Uv *uv)
     uvs_.push_back(uv);
 }
 
-void UVManager::addUvs(Degree *degree, QDomElement &element)
+void UTManager::addUvs(Degree *degree, QDomElement &element)
 {
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
@@ -107,7 +107,7 @@ void UVManager::addUvs(Degree *degree, QDomElement &element)
     }
 }
 
-void UVManager::addUvs(Semester *semester, QDomElement &element)
+void UTManager::addUvs(Semester *semester, QDomElement &element)
 {
     for(QDomElement uvElement = element.firstChildElement("uv"); !uvElement.isNull(); uvElement = uvElement.nextSiblingElement("uv"))
     {
@@ -115,7 +115,7 @@ void UVManager::addUvs(Semester *semester, QDomElement &element)
     }
 }
 
-void UVManager::addQuotas(Degree *degree, QDomElement &element)
+void UTManager::addQuotas(Degree *degree, QDomElement &element)
 {
     for(QDomElement quotaElement = element.firstChildElement("quota"); !quotaElement.isNull(); quotaElement = quotaElement.nextSiblingElement("quota"))
     {
@@ -125,14 +125,14 @@ void UVManager::addQuotas(Degree *degree, QDomElement &element)
     }
 }
 
-void UVManager::addStudent(const QString &login)
+void UTManager::addStudent(const QString &login)
 {
     student_ = new Student;
     student_->setLogin(login);
     students_.push_back(student_);
 }
 
-void UVManager::addStudent(Student *student)
+void UTManager::addStudent(Student *student)
 {
     if(!student)
         return;
@@ -140,7 +140,7 @@ void UVManager::addStudent(Student *student)
     students_.push_back(student);
 }
 
-bool UVManager::connect(const QString &login)
+bool UTManager::connect(const QString &login)
 {
     for(int i = 0; i < students_.size(); i++)
     {
@@ -153,7 +153,7 @@ bool UVManager::connect(const QString &login)
     return false;
 }
 
-QList<const Degree*> UVManager::degreesWithParent(const QString &parentTitle)
+QList<const Degree*> UTManager::degreesWithParent(const QString &parentTitle)
 {
     QList<const Degree*> result;
     for(int i = 0; i < degrees_.size(); i++)
@@ -164,7 +164,7 @@ QList<const Degree*> UVManager::degreesWithParent(const QString &parentTitle)
     return result;
 }
 
-Degree* UVManager::degreeWithTitle(const QString &title)
+Degree* UTManager::degreeWithTitle(const QString &title)
 {
     for(int i = 0; i < degrees_.size(); i++)
     {
@@ -175,18 +175,18 @@ Degree* UVManager::degreeWithTitle(const QString &title)
     return 0;
 }
 
-UVManager& UVManager::instance()
+UTManager& UTManager::instance()
 {
     if(!instance_)
     {
-        instance_ = new UVManager;
-        UVManager::handler_.instance_ = instance_;
+        instance_ = new UTManager;
+        UTManager::handler_.instance_ = instance_;
     }
 
     return *instance_;
 }
 
-void UVManager::load()
+void UTManager::load()
 {
     try
     {
@@ -201,7 +201,7 @@ void UVManager::load()
     }
 }
 
-void UVManager::loadCategories(const QString &fileName)
+void UTManager::loadCategories(const QString &fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
@@ -220,7 +220,7 @@ void UVManager::loadCategories(const QString &fileName)
     file.close();
 }
 
-void UVManager::loadDegrees(const QString &fileName)
+void UTManager::loadDegrees(const QString &fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
@@ -239,7 +239,7 @@ void UVManager::loadDegrees(const QString &fileName)
     file.close();
 }
 
-void UVManager::loadStudents(const QString &studentsFileName)
+void UTManager::loadStudents(const QString &studentsFileName)
 {
     QFile file(studentsFileName);
     if(!file.open(QIODevice::ReadOnly))
@@ -312,7 +312,7 @@ void UVManager::loadStudents(const QString &studentsFileName)
     file.close();
 }
 
-void UVManager::loadUvs(const QString &fileName)
+void UTManager::loadUvs(const QString &fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
@@ -338,7 +338,7 @@ void UVManager::loadUvs(const QString &fileName)
     file.close();
 }
 
-void UVManager::removeDegree(const QString &title)
+void UTManager::removeDegree(const QString &title)
 {
     for(int i = 0; i < degrees_.size(); i++)
     {
@@ -351,7 +351,7 @@ void UVManager::removeDegree(const QString &title)
     }
 }
 
-void UVManager::removeUv(const QString &code)
+void UTManager::removeUv(const QString &code)
 {
     for(int i = 0; i < uvs_.size(); i++)
     {
@@ -363,7 +363,7 @@ void UVManager::removeUv(const QString &code)
     }
 }
 
-void UVManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &dom)
+void UTManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &dom)
 {
     QDomElement degreeElement = dom.createElement("item");
     degreeElement.setAttribute("type",degree->type());
@@ -403,7 +403,7 @@ void UVManager::saveDegree(Degree *degree, QDomElement &element, QDomDocument &d
         saveDegree(children.at(i),degreeElement,dom);
 }
 
-void UVManager::saveDegrees()
+void UTManager::saveDegrees()
 {
     QFile file(degreesFilePath_);
     if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
@@ -427,7 +427,7 @@ void UVManager::saveDegrees()
     file.close();
 }
 
-void UVManager::saveStudents()
+void UTManager::saveStudents()
 {
     QFile file(studentsFilePath_);
     if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
@@ -572,7 +572,7 @@ void UVManager::saveStudents()
     file.close();
 }
 
-void UVManager::saveUvs()
+void UTManager::saveUvs()
 {
     QFile file(uvsFilePath_);
     if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate))
@@ -625,7 +625,7 @@ void UVManager::saveUvs()
     file.close();
 }
 
-const Uv* UVManager::uvFromCode(const QString &code) const
+const Uv* UTManager::uvFromCode(const QString &code) const
 {
     for(int i = 0; i < uvs_.size(); i++)
     {
@@ -636,7 +636,7 @@ const Uv* UVManager::uvFromCode(const QString &code) const
     return 0;
 }
 
-QList<const Uv*> UVManager::uvs() const
+QList<const Uv*> UTManager::uvs() const
 {
     QList<const Uv*> result;
     for(int i = 0; i < uvs_.size(); i++)
@@ -646,7 +646,7 @@ QList<const Uv*> UVManager::uvs() const
     return result;
 }
 
-QList<const Uv*> UVManager::uvsFromCode(const QStringList &codes) const
+QList<const Uv*> UTManager::uvsFromCode(const QStringList &codes) const
 {
     QList<const Uv*> result;
     for(int i = 0; i < uvs_.size(); i++)
