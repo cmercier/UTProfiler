@@ -1,21 +1,21 @@
-    #ifndef STRATEGY_H
+#ifndef STRATEGY_H
 #define STRATEGY_H
 #include "student.h"
 #include "expectation.h"
 #include "semester.h"
 
 /**
- * @brief The Strategy class
+ * @brief The AlgoStrategy class
  * Cette classe implémente le patron de conception stategie.
  * Elle est utilisée par l'onglet expectations. Ce dernier contient un pointeur sur strategy.
  * Lors de l'update, il appelle la fonction run() de la stratégie, qui exécute l'algorithme associé.
  * Pour changer l'algo, il suffit de créer une classe dérivée de strategy et réimplémenter la fonction exec.
  */
 
-class Strategy
+class AlgoStrategy
 {
 public:
-    Strategy(Student* student,Expectation* exp):student_(student),exp_(exp){}
+    AlgoStrategy(Student* student,Expectation* exp):student_(student),exp_(exp){}
 
     /**
      * @brief run

@@ -160,6 +160,7 @@ void Admin::addUv()
         UTManager::instance().addUv(uv);
 
         showAddUvPanel(false);
+        updateForms();
         QMessageBox::information(this,"","Uv ajoutée.",QMessageBox::Ok);
     }
 }
@@ -546,6 +547,7 @@ void Admin::editUv()
         UTManager::instance().addUv(uv);
 
         showEditUvPanel(false);
+        updateForms();
         QMessageBox::information(this,"","Uv modifiée.",QMessageBox::Ok);
     }
 }
@@ -628,6 +630,10 @@ void Admin::updateForms()
     editUv_comboBox_->clear();
     removeUv_comboBox_->clear();
     removeDegree_comboBox_->clear();
+    editDegree_comboBox_->clear();
+    addDegree_parent_->clear();
+    addDegree_uvsBoxes_.clear();
+    editDegree_uvsBoxes_.clear();
     Utilities::clearLayout(addDegree_uvs_layout_);
     Utilities::clearLayout(editDegree_uvs_layout_);
 

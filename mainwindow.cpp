@@ -2,7 +2,9 @@
 
 MainWindow::MainWindow()
 {
-    UTManager::instance().load();
+    // Make sure UTManager is instantiated and loads the data
+    UTManager::instance();
+
     createStackedWidget();
 }
 

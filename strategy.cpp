@@ -1,6 +1,6 @@
 #include "strategy.h"
 
-QList<Semester*> Strategy::run()
+QList<Semester*> AlgoStrategy::run()
 {
     return exec();
 }

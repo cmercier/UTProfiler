@@ -17,7 +17,9 @@ HEADERS += \
     connection.h \
     semester.h \
     strategy.h \
-    algo.h
+    algo.h \
+    datastrategy.h \
+    xmldatapersistance.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -36,4 +38,6 @@ SOURCES += \
     connection.cpp \
     semester.cpp \
     strategy.cpp \
-    algo.cpp
+    algo.cpp \
+    datastrategy.cpp \
+    xmldatapersistance.cpp

@@ -5,14 +5,42 @@
 #include "degree.h"
 #include "semester.h"
 
+/**
+ * @brief The Expectation class
+ * Cette classe porte toutes les informations d'une prévision (uvs voulues et non voulues, semestres restant, formation souhaitée).
+ */
+
 class Expectation
 {
 public:
     Expectation();
 
+    /**
+     * @brief addDegree
+     * @param degree
+     * Ajoute un cursus que l'étudiant souhaite suivre.
+     */
     void addDegree(const Degree *degree);
+
+    /**
+     * @brief addRejectedUv
+     * @param uv
+     * Ajoute une uv que l'étudiant ne souhaite pas suivre.
+     */
     void addRejectedUv(const Uv* uv);
+
+    /**
+     * @brief addRequiredUv
+     * @param uv
+     * Ajoute une uv que l'étudiant souhaite suivre.
+     */
     void addRequiredUv(const Uv* uv);
+
+    /**
+     * @brief addSemester
+     * @param semester
+     * Ajoute un semestre dans la liste des semestres restant à l'étudiant.
+     */
     void addSemester(Semester *semester);    
     void addUV(const QString codeUV, const QString semester, Grade grade);
     void clearUvs();

@@ -37,7 +37,8 @@ public:
      * 1 signifie que le cursus est intégré dans un autre. Ex : GI -> SRI
      */
     int depth() const;
-    const Degree* parent() const {return parent_;}
+    Degree* parent() const {return parent_;}
+    void removeChild(const QString &title);
     void removeChildren();
 
     /**

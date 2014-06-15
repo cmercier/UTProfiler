@@ -2,10 +2,14 @@
 #define ALGO_H
 #include "strategy.h"
 
-class Algo: public Strategy
+/**
+ * @brief The Algo class
+ * Une première implémentation simplifiée de l'algorithme de prévisions.
+ */
+class Algo: public AlgoStrategy
 {
 public:
-    Algo(Student* student,Expectation* exp):Strategy(student,exp){}
+    Algo(Student* student,Expectation* exp):AlgoStrategy(student,exp){}
 
 private:
     QList<Semester*> exec();

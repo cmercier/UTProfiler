@@ -25,6 +25,18 @@ int Degree::depth() const
     return 0;
 }
 
+void Degree::removeChild(const QString &title)
+{
+    for(int i = 0; i < children_.size(); i++)
+    {
+        if(children_[i]->title() == title)
+        {
+            children_.removeAt(i);
+            return;
+        }
+    }
+}
+
 void Degree::removeChildren()
 {
     while(children_.size() > 0)
